@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/templates/modeloSistema.xhtml">
+
+	<ui:define name="menu">
+		<ui:include src="/includes/menuPrincipal.xhtml" />
+	</ui:define>
+
+	<ui:define name="conteudo">
+		<h:form id="frmUsuListagem" widgetVar="tabelaUsuario">
+			<p:dataTable id="tblUsuario"
+				emptyMessage="Nenhum Registro Encontrado"
+				value="#{MBListaInadimBean.itens}" var="item"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+				filteredValue="#{MBListaInadimBean.itensfiltrados}" paginator="true"
+				rows="8">
+
+				<f:facet name="header">
+					Parcelas em Atraso.
+				</f:facet>
+
+				<f:facet name="footer">
+					<p:commandButton action="principal.xhtml?faces-redirect=true"
+						value="Cancelar" />
+				</f:facet>
+				<p:column headerText="Segurado" sortBy="#{item.nco_nm_segurado}"
+					filterBy="#{item.nco_nm_segurado}">
+					<h:outputText value="#{item.nco_nm_segurado}" />
+					<f:facet name="header">
+						<h:outputText value="Segurado" />
+					</f:facet>
+				</p:column>
+				<p:column headerText="Apólice" sortBy="#{item.nco_apol}"
+					filterBy="#{item.nco_apol}">
+					<h:outputText value="#{item.nco_apol}" />
+					<f:facet name="header">
+						<h:outputText value="Apólice" />
+					</f:facet>
+				</p:column>
+				<p:column headerText="Data da Última Parcela"
+					sortBy="#{item.nco_amd_cobranca}" filterBy="#{item.nco_amd_cobranca}">
+					<h:outputText value="#{item.nco_amd_cobranca}">
+						<f:convertDateTime pattern="dd-MM-yyyy" />
+					</h:outputText>
+				</p:column>				
+				<p:column headerText="Última Parcela Recebida"
+					sortBy="#{item.nco_prest}"  >
+					<h:outputText value="#{item.nco_prest}" />
+					<f:facet name="header">
+						<h:outputText value="Última Parcela Recebida" />
+					</f:facet>
+				</p:column>
+				<p:column headerText="Parcela à Receber"
+					sortBy="#{item.nco_prest}" >
+					<h:outputText value="#{item.nco_prest_next}" />
+					<f:facet name="header">
+						<h:outputText value="Parcela à Receber" />
+					</f:facet>
+				</p:column>
+				<p:column headerText="Data à Receber" sortBy="#{item.nco_apol}"
+					filterBy="#{item.nco_apol}"
+					 locale="pt_BR"
+					pattern="MM/yyyy">
+					<f:facet name="header">
+						<h:outputText value="à Receber" />
+					</f:facet>
+					<h:outputText value="#{item.nco_amd_cobranca_int_next}" />
+				</p:column>
+			</p:dataTable>
+			<p:panel header="Exportar Faturamento">
+				<h:commandLink>
+					<p:graphicImage value="/images/Excel.png" />
+					<p:dataExporter type="xls"
+						postProcessor="#{MBListaInadimBean.postProcessXLS}"
+						target="tblUsuario" fileName="Inadimplente" />
+				</h:commandLink>
+
+			</p:panel>
+
+		</h:form>
+
+
+
+	</ui:define>
+
+</ui:composition>
+
+

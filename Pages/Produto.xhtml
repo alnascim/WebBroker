@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/templates/modeloSistema.xhtml">
+
+	<ui:define name="menu">
+		<ui:include src="/includes/menuPrincipal.xhtml" />
+	</ui:define>
+
+	<ui:define name="conteudo">
+		<h:form id="frmUsuListagem" widgetVar="tabelaUsuario">
+			<p:dataTable id="tblUsuario"
+				emptyMessage="Nenhum Registro Encontrado" value="#{MBProduto.itens}"
+				var="item" filteredValue="#{MBProduto.itensfiltrados}"
+				paginator="true" rows="8">
+
+				<f:facet name="header">
+					Produto do Ramo Principal
+				</f:facet>
+				<f:facet name="footer">
+
+					<p:commandButton value="Novo"
+						actionListener="#{MBProduto.prepararNovo}"
+						oncomplete="PF('dlgUsuario').show();"
+						update=":frmUsuNovo:pnlUsuNovo" />
+					<p:commandButton action="principal.xhtml?faces-redirect=true"
+						value="Cancelar" />
+
+				</f:facet>
+
+				<p:column headerText="Produto" sortBy="#{item.tb_subsegmento}"
+					filterBy="#{item.tb_subsegmento}">
+					<h:outputText value="#{item.tb_subsegmento}" />
+				</p:column>
+				<p:column headerText="Congênere" sortBy="#{item.tb_razao}"
+					filterBy="#{item.tb_razao}">
+					<h:outputText value="#{item.tb_razao}" />
+				</p:column>
+
+				<p:column headerText="Opções">
+					<p:commandButton icon="ui-icon-trash" title="Excluir"
+						oncomplete="PF('dlgExcluir').show();"
+						update=":frmExcluir:pnlExcNovo">
+						<f:setPropertyActionListener target="#{MBProduto.produto}"
+							value="#{item}" />
+					</p:commandButton>
+
+					
+				</p:column>
+			</p:dataTable>
+		</h:form>
+		<p:dialog widgetVar="dlgUsuario" closable="false" draggable="false"
+			modal="true" appendTo="@(body)" resizable="false"
+			header="Novo Segmento">
+			<h:form id="frmUsuNovo">
+				<h:panelGrid id="pnlUsuNovo" columns="2">
+					<p:outputLabel value="Código do Produto" />
+					<p:inputText size="5" maxlength="5"
+						value="#{MBProduto.produto.nco_cia}" />
+						
+					<p:outputLabel value="Nome do Produto" />
+					<p:inputText size="50" maxlength="100"
+						value="#{MBProduto.produto.tb_subsegmento}" />
+					<p:outputLabel value="Congênere" />
+					<p:selectOneMenu
+						value="#{MBProduto.produto.congenere_combo.tb_idpj}" filter="true"
+						style="width: 100%" required="true"
+						requiredMessage="Campo Congêmere é obrigatório." immediate="false">
+						<f:selectItems value="#{MBProduto.comboCongenere}" var="item"
+							itemValue="#{item.tb_idpj}" itemLabel="#{item.tb_razao}" />
+					</p:selectOneMenu>
+
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton value="Gravar" actionListener="#{MBProduto.novo}"
+						oncomplete="PF('dlgUsuario').hide();tabelaUsuario.clearfilters();"
+						update=":frmUsuListagem:tblUsuario :msgGlobal"
+						action="Produto.xhtml?faces-redirect=true" />
+												
+					<p:commandButton value="Cancelar"
+						onclick="PF('dlgUsuario').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+		<p:dialog widgetVar="dlgExcluir" closable="false" draggable="false"
+			modal="true" appendTo="@(body)" resizable="false"
+			header="Excluir Usuário">
+			<h:form id="frmExcluir">
+				<h:panelGrid id="pnlExcNovo" columns="2">
+					<h:outputText value="Código Interno" />
+					<h:outputText value="#{MBProduto.produto.idsub}" />
+
+					<h:outputText value="Produto" />
+					<h:outputText value="#{MBProduto.produto.tb_subsegmento}" />
+
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton value="Excluir"
+						actionListener="#{MBProduto.excluir}"
+						oncomplete="PF('dlgExcluir').hide(); tabelaUsuario.clearfilters();"
+						update=":frmUsuListagem:tblUsuario :msgGlobal" />
+					<p:commandButton value="Cancelar"
+						onclick="PF('dlgExcluir').hide();" />
+				</h:panelGrid>
+
+			</h:form>
+
+
+		</p:dialog>
+		<p:dialog widgetVar="dlgEditar" closable="false" draggable="false"
+			modal="true" appendTo="@(body)" resizable="false"
+			header="Editar Usuário">
+			<h:form id="frmAlterar">
+				<h:panelGrid id="pnlEditar" columns="2">
+
+					<p:outputLabel value="Produto" />
+					<p:inputText value="#{MBProduto.produto.tb_subsegmento}" size="50"
+						maxlength="100" />
+					<p:outputLabel value="Congênere" />
+					<p:selectOneMenu
+						value="#{MBProduto.produto.congenere_combo.tb_idpj}" filter="true"
+						style="width: 100%" required="true"
+						requiredMessage="Campo Congêmere é obrigatório." immediate="false">
+
+						<f:selectItems value="#{MBProduto.comboCongenere}" var="item"
+							itemValue="#{item.tb_idpj}" itemLabel="#{item.tb_razao}" />
+					</p:selectOneMenu>
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton value="Alterar"
+						actionListener="#{MBProduto.editar}"
+						action="Produto.xhtml?faces-redirect=true"
+						oncomplete="PF('dlgEditar').hide(); tabelaUsuario.clearfilters();"
+						update=":frmUsuListagem:tblUsuario :msgGlobal" />
+					<p:commandButton value="Cancelar" onclick="PF('dlgEditar').hide();" />
+				</h:panelGrid>
+
+
+			</h:form>
+
+		</p:dialog>
+
+
+	</ui:define>
+
+</ui:composition>
+
+

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+	<title>Indicadores</title>
+	<h:outputStylesheet library="css" name="estilos.css" />
+
+</h:head>
+<h:body>
+	<h:form>
+		<p:growl id="msgGlobal" life="2000" />
+		<p:layout fullPage="true">
+			<p:layoutUnit position="north" size="30"
+				header="Indicadores Gerencias" resizable="false" closable="false"
+				collapsible="false">
+			</p:layoutUnit>
+			<p:layoutUnit position="south" size="50" header="" resizable="false"
+				closable="false" collapsible="false">
+				<p:commandButton action="principal.xhtml?faces-redirect=true"
+					value="Voltar" align="center" />
+			</p:layoutUnit>
+			<p:layoutUnit position="center">
+				<p:panelGrid columns="2" style="text-align: center;" border="0"
+					cellpadding="0">
+
+					<p:pieChart value="#{MBGraficoBean.modelo}" legendPosition="e"
+						fill="true" showDataLabels="true"
+						title="Tipo de Pessoa Cadastrada"
+						style="width:400px;height:300px;" sliceMargin="5" diameter="150" />
+					<p:pieChart value="#{MBDash_001.modelo}" legendPosition="e"
+						fill="true" showDataLabels="true"
+						title="Comissão Paga Por Parcela"
+						style="width:400px;height:300px;" sliceMargin="5" diameter="150" />
+					
+				</p:panelGrid>
+
+			</p:layoutUnit>
+		</p:layout>
+
+	</h:form>
+</h:body>
+</html>

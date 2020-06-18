@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/templates/modeloSistema.xhtml">
+	<ui:define name="menu">
+		<ui:include src="/includes/menuPrincipal.xhtml" />
+	</ui:define>
+
+	<ui:define name="conteudo">
+		<p:layout style="min-width:400px;min-height:200px;">
+			<p:layoutUnit position="west">
+				<h:form id="frmUsuConsulta" widgetVar="widgetVar_010">
+					<h:panelGrid id="pnlConsulta" columns="5">
+						<p:outputLabel for="D_INI" value="Data Inicio" />
+						<p:calendar id="D_INI"
+							value="#{MBListaFatura.jlistaFatura.pf_DataIni}" effect="fold"
+							locale="pt_BR" pattern="dd/MM/yyyy" />
+						<p:outputLabel for="D_FIM" value="Data Fim" />
+						<p:calendar id="D_FIM"
+							value="#{MBListaFatura.jlistaFatura.pf_DataFim}" effect="fold"
+							locale="pt_BR" pattern="dd/MM/yyyy" />
+						<p:commandButton value="Pesquisar"
+							actionListener="#{MBListaFatura.prepararPesquisa_filtro}"
+							update=":formLista:pnlListar">
+						</p:commandButton>
+					</h:panelGrid>
+
+				</h:form>
+				<h:form id="formLista" widgetVar="widgetVar_001">
+					<h:panelGrid id="pnlListar">
+						<p:panelGrid columns="6">
+							<p:dataTable id="tblUsuario"
+								emptyMessage="Nenhum Registro Encontrado"
+								value="#{MBListaFatura.itens}" var="item"
+								paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+								filteredValue="#{MBListaFatura.itensfiltrados}" paginator="true"
+								rows="8" selection="#{MBListaFatura.itensfatura}"
+								style="margin-bottom:0" rowKey="#{item.ID_EXT}">
+								<f:facet name="header">
+									Faturamento
+							</f:facet>
+								<p:column selectionMode="multiple"
+									style="width:16px;text-align:center" />
+								<f:facet name="footer">
+
+
+									<p:commandButton value="Limpar Pesquisa"
+										icon="ui-icon-arrowrefresh-1-e"
+										actionListener="#{MBListaFatura.prepararPesquisa}"
+										update=":formLista:tblUsuario"
+										action="ConciliacaoReceitas.xhtml?faces-redirect=true" />
+
+									<p:commandButton process="tblUsuario"
+										update=":formLista:multiCarDetail" icon="ui-icon-search"
+										value="Cálculo" oncomplete="PF('multiCarDialog').show()">
+									</p:commandButton>
+
+									<p:commandButton action="principal.xhtml?faces-redirect=true"
+										value="Sair" />
+
+									<p:commandButton value="Info" icon="ui-icon-info"
+										onclick="PF('infomation').show();" />
+								</f:facet>
+								<p:column headerText="Data-Fatura"
+									sortBy="#{item.nco_amd_cobranca}"
+									filterBy="#{item.nco_amd_cobranca}">
+									<h:outputText value="#{item.nco_amd_cobranca}" />
+									<f:facet name="header">
+										<h:outputText value="Data-Fatura" />
+									</f:facet>
+								</p:column>
+								<p:column headerText="Segmento" sortBy="#{item.segmento}"
+									filterBy="#{item.segmento}">
+									<h:outputText value="#{item.segmento}" />
+									<f:facet name="header">
+										<h:outputText value="Segmento" />
+									</f:facet>
+								</p:column>
+
+								<p:column headerText="Sucursal" sortBy="#{item.tb_Suc}"
+									filterBy="#{item.tb_Suc}">
+									<h:outputText value="#{item.tb_Suc}" />
+									<f:facet name="header">
+										<h:outputText value="Sucursal" />
+									</f:facet>
+								</p:column>
+								<p:column headerText="Fatura" sortBy="#{item.tb_fatura}"
+									filterBy="#{item.tb_fatura}"
+									style="width:5px;text-align:center;">
+									<h:outputText value="#{item.tb_fatura}" />
+									<f:facet name="header">
+										<h:outputText value="Fatura" />
+									</f:facet>
+								</p:column>
+								<p:column headerText="Valor Bruto" sortBy="#{item.nco_comis}"
+									filterBy="#{item.nco_comis}">
+									<h:outputText value="#{item.nco_comis}" />
+									<f:facet name="header">
+										<h:outputText value="Valor Bruto" />
+									</f:facet>
+								</p:column>
+							</p:dataTable>
+						</p:panelGrid>
+					</h:panelGrid>
+					<p:dialog widgetVar="multiCarDialog" closable="false"
+						draggable="false" modal="true" appendTo="@(body)"
+						resizable="false" header="Alterar">
+						<p:outputPanel id="multiCarDetail" style="text-align:center;">
+							<h:panelGrid id="pnlSoma" columns="3">
+								<p:outputLabel value="Valor Total a Conciliar">
+								</p:outputLabel>
+
+								<p:inputText id="somat" value="#{MBListaFatura.itemSelecionado}"
+									readonly="true">
+									<f:convertNumber pattern="####,##0.00" />
+								</p:inputText>
+
+								<p:commandButton value="Conciliar"
+									onclick="PF('multiCarDialog').hide();"
+									update=":formLista:tblUsuario :msgGlobal "
+									action="ConciliacaoReceitas.xhtml?faces-redirect=true">
+
+									<p:ajax event="click" listener="#{MBListaFatura.conciliar}"
+										update="somat" />
+
+								</p:commandButton>
+
+							</h:panelGrid>
+
+							<p:commandButton value="Calcular">
+
+								<p:ajax event="click" listener="#{MBListaFatura.onRowSum}"
+									update="somat" />
+
+							</p:commandButton>
+
+							<p:commandButton value="Cancelar"
+								onclick="PF('multiCarDialog').hide();"
+								update=":formLista:tblUsuario :msgGlobal "
+								action="ConciliacaoReceitas.xhtml?faces-redirect=true">
+
+								<p:ajax event="click" listener="#{MBListaFatura.cancelar}"
+									update="somat" />
+							</p:commandButton>
+
+
+							<p:commandButton value="Pesquisar">
+
+								<p:ajax event="click"   />
+
+							</p:commandButton>
+
+
+						</p:outputPanel>
+					</p:dialog>
+
+					<p:dialog widgetVar="infomation" closable="false" draggable="true"
+						modal="false" appendTo="@(body)" resizable="false"
+						header="Status da Conciliação">
+						<p:outputPanel id="infom" style="text-align:left;">
+							<h:panelGrid id="info" columns="1">
+								<p:outputLabel value="0-Valor Recebido da Congênere!" />
+								<p:outputLabel value="1-Valor Calculado Ainda Não Conciliado!" />
+								<p:outputLabel value="2-Valor Conciliado Com Conta Banco!" />
+								<p:outputLabel value="3-Valor Faturado - Resultado Operacional" />
+
+							</h:panelGrid>
+
+							<p:commandButton value="Fechar"
+								onclick="PF('infomation').hide();" />
+
+
+						</p:outputPanel>
+					</p:dialog>
+
+
+				</h:form>
+
+			</p:layoutUnit>
+
+			<p:layoutUnit position="center">
+				<h:form id="frmUsuConsultab" widgetVar="widgetVar_010b">
+
+					<h:panelGrid id="pnlConsultab" columns="6">
+						<p:outputLabel for="D_INIb" value="Data Inicio" />
+						<p:calendar id="D_INIb"
+							value="#{MBExtratoBancario.extrato.pf_DataIni}" effect="fold"
+							locale="pt_BR" pattern="dd/MM/yyyy" />
+						<p:outputLabel for="D_FIMb" value="Data Fim" />
+						<p:calendar id="D_FIMb"
+							value="#{MBExtratoBancario.extrato.pf_DataFim}" effect="fold"
+							locale="pt_BR" pattern="dd/MM/yyyy" />
+						<p:commandButton value="Pesquisar"
+							actionListener="#{MBExtratoBancario.prepararPesquisa_extrato}"
+							update=":formLista2:pnlListar2">
+						</p:commandButton>
+
+					</h:panelGrid>
+
+				</h:form>
+
+				<h:form id="formLista2" widgetVar="widgetVar_001">
+
+					<h:panelGrid id="pnlListar2">
+						<p:panelGrid columns="6">
+							<p:dataTable id="tabela2"
+								emptyMessage="Nenhum Registro Encontrado."
+								value="#{MBExtratoBancario.itens}"
+								paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+								var="item" paginator="true" rows="8">
+								<f:facet name="header">Extrato Conta Corrente</f:facet>
+								<f:facet name="footer">
+									<p:commandButton value="Limpar Pesquisa"
+										icon="ui-icon-arrowrefresh-1-e"
+										actionListener="#{MBExtratoBancario.prepararPesquisa}"
+										update=":formLista2:tabela2" />
+
+									<p:commandButton action="principal.xhtml?faces-redirect=true"
+										value="Sair" />
+									<p:commandButton value="Info" icon="ui-icon-info"
+										onclick="PF('infomation').show();" />
+								</f:facet>
+								<p:column headerText="Data do Lançamento"
+									filterBy="#{item.c_data}" sortBy="#{item.c_data}">
+									<h:outputText value="#{item.c_data}" />
+								</p:column>
+
+								<p:column headerText="Tipo do Lançamento"
+									filterBy="#{item.c_lancto}" sortBy="#{item.c_lancto}">
+									<h:outputText value="#{item.c_lancto}" />
+								</p:column>
+								<p:column id="credt" headerText="Crédito (R$)"
+									filterBy="#{item.c_credito}" sortBy="#{item.c_credito}">
+									<h:outputText value="#{item.c_credito}" />
+								</p:column>
+
+							</p:dataTable>
+						</p:panelGrid>
+					</h:panelGrid>
+				</h:form>
+			</p:layoutUnit>
+		</p:layout>
+	</ui:define>
+</ui:composition>

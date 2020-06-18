@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+	<title>Login WebBroker</title>
+	<h:outputStylesheet library="css" name="estilos.css" />
+
+</h:head>
+<h:body>
+	<h:form id="frmPrincipal" widgetVar="widgetVar_001">
+		<p:growl id="msgGlobal" life="2000" />
+		<p:layout fullPage="true">
+			<p:layoutUnit position="north" size="30" header="" resizable="false"
+				closable="false" collapsible="false">
+				<h:outputLabel value="north" />
+			</p:layoutUnit>
+			<p:layoutUnit position="center" size="200" header=""
+				resizable="false" closable="false" collapsible="false">
+				<h:outputLabel value="center" />
+				<h:form id="frmUsuListagem" widgetVar="widgetVar_002">
+					<p:dataTable id="tbl_001"
+						emptyMessage="Nenhum Registro Encontrado."
+						value="#{MBApolice.itens}"
+						filteredValue="#{MBApolice.itensfiltrados}"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+						var="item" paginator="true" rows="8">
+						<f:facet name="header">
+							Tipo de Lançamento Contábil
+						</f:facet>
+						<f:facet name="footer">
+							<p:commandButton value="Novo"								
+								oncomplete="PF('dlgUsuario').show();"
+								update=":frmUsuNovo:pnlUsuNovo " />
+							<p:commandButton action="principal.xhtml?faces-redirect=true"
+								value="Cancelar" />
+						</f:facet>
+						<p:column headerText="Mês de Produção"
+							sortBy="#{item.tb_ano_mes_prod}"
+							filterBy="#{item.tb_ano_mes_prod}"
+							style="width:60px;text-align:left;">
+							<f:facet name="header">
+								<h:outputText value="Mês de Produção" />
+							</f:facet>
+							<h:outputText value="#{item.tb_ano_mes_prod}" />
+						</p:column>
+						<p:column headerText="Valor do Prêmio"
+							filterBy="#{item.tb_vl_premio}"
+							style="width:120px;text-align:right;">
+							<h:outputText value="#{item.tb_vl_premio}">
+								<f:convertNumber pattern="####,##0.00" />
+							</h:outputText>
+							<f:facet name="header">
+								<h:outputText value="Valor do Prêmio" />
+							</f:facet>
+						</p:column>
+						<p:column headerText="Produtor" sortBy="#{item.nome_produtor}"
+							style="width:30px;text-align:left;"
+							filterBy="#{item.nome_produtor}">
+							<f:facet name="header">
+								<h:outputText value="Produtor" />
+							</f:facet>
+							<h:outputText value="#{item.nome_produtor}" />
+						</p:column>
+					</p:dataTable>
+				</h:form>
+				<p:dialog widgetVar="dlgUsuario" closable="false" draggable="false"
+					modal="true" appendTo="@(body)" resizable="false"
+					header="02 - Dados do Apólice">
+					<h:form id="frmUsuNovo">
+						<h:panelGrid id="pnlUsuNovo">
+							<p:panelGrid columns="6" style="width: 100%">
+								<p:outputLabel value="Ano Mês de Produção" />
+								<p:inputText id="data" value="#{MBApolice.data}" disabled="true"
+									style="width: 50%" />
+								<p:outputLabel value="Número da Apólice" />
+								<p:inputText id="ncmae" value="#{MBApolice.apolice.id_apolice}"
+									mask="999999999" size="9" required="true" maxlength="9"
+									requiredMessage="Número da Apólice é obrigatório."
+									immediate="false" />
+							</p:panelGrid>
+						</h:panelGrid>
+					</h:form>
+				</p:dialog>
+			</p:layoutUnit>
+			<p:layoutUnit position="south" size="100" header="" resizable="false"
+				closable="false" collapsible="false">
+				<h:outputLabel value="center" />
+			</p:layoutUnit>
+
+		</p:layout>
+	</h:form>
+</h:body>
+</html>

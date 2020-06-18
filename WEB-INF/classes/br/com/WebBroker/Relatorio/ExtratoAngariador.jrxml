@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ExtratoCorretor" pageWidth="890" pageHeight="595" orientation="Landscape" columnWidth="850" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="3cea7e8e-c533-45d0-a457-9a8bcf4a91aa">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="data_move" class="java.lang.String"/>
+	<parameter name="segmento" class="java.lang.String"/>
+	<parameter name="angariador" class="java.lang.String"/>
+	<parameter name="sum_net_comis" class="java.lang.String"/>
+	<parameter name="sum_nco_comis" class="java.lang.String"/>
+	<field name="tb_pf_nome" class="java.lang.String"/>
+	<field name="nco_nm_segurado" class="java.lang.String"/>
+	<field name="nco_date_str" class="java.lang.String"/>
+	<field name="nco_nr_proposta" class="java.lang.String"/>
+	<field name="nco_comis" class="java.lang.String"/>
+	<field name="net_comis" class="java.lang.String"/>
+	<field name="tb_ano_mes_prod" class="java.lang.String"/>
+	<field name="nco_prest" class="java.lang.String"/>
+	<variable name="sum_net_comis" class="java.lang.String"/>
+	<variable name="variable1" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="71" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="5" y="3" width="823" height="47" backcolor="#CCCCCC" uuid="d73eb19a-68e1-483e-93de-37fedbfbe680"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial Narrow" size="16" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+				</textElement>
+				<text><![CDATA[EXTRATO DE MOVIMENTAÇÃO FINANCEIRO - ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="596" y="5" width="100" height="45" uuid="eb5cb2b4-d3c0-4c72-955f-b107e50bb3ac"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial Narrow" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{data_move}]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement x="323" y="4" width="100" height="45" uuid="a954de85-5c34-467b-9950-1d058eec14de"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial Narrow" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{segmento}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="5" y="50" width="823" height="20" uuid="9caecb89-e8d2-4833-b00b-e69ce90bbea1"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{angariador}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="7" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="29" splitType="Stretch">
+			<staticText>
+				<reportElement x="5" y="3" width="265" height="20" uuid="60087b77-9a1d-4174-9b85-e061ec7515a4"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<text><![CDATA[Segurado]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="370" y="3" width="100" height="20" uuid="7e12c48f-c6e1-4a5b-86f5-fde929aaa768"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<text><![CDATA[Data Movimento]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="270" y="3" width="100" height="20" uuid="15f1b0f6-8c31-4fe5-8e9d-7a389b410182"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<text><![CDATA[Data da Produção]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="470" y="3" width="100" height="20" uuid="9ac0a072-e8eb-4525-b412-ca9fca966a15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<text><![CDATA[Número da Proposta]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="570" y="3" width="100" height="20" uuid="64181881-4b95-415c-b598-26df54b394dd"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+					<paragraph lineSpacing="1_1_2"/>
+				</textElement>
+				<text><![CDATA[Comissão Corretor]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="670" y="3" width="113" height="20" uuid="05532aa1-a423-49be-b286-464a365a21a1"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+					<paragraph lineSpacing="1_1_2"/>
+				</textElement>
+				<text><![CDATA[Comissão Angariador]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement mode="Transparent" x="3" y="3" width="267" height="20" backcolor="#CCCCCC" uuid="d220b00f-faa8-4d5e-becc-572ae0e25835"/>
+			</rectangle>
+			<rectangle>
+				<reportElement mode="Transparent" x="270" y="3" width="100" height="20" backcolor="#CCCCCC" uuid="6d70372a-127b-407c-a4c1-cbf1a939fdb5"/>
+			</rectangle>
+			<rectangle>
+				<reportElement mode="Transparent" x="370" y="3" width="100" height="20" backcolor="#CCCCCC" uuid="0d07c443-9df2-4015-857c-af5f42d4f1d9"/>
+			</rectangle>
+			<rectangle>
+				<reportElement mode="Transparent" x="470" y="3" width="100" height="20" backcolor="#CCCCCC" uuid="fda2690f-3c62-471c-99a7-20457a6ea111"/>
+			</rectangle>
+			<rectangle>
+				<reportElement mode="Transparent" x="570" y="3" width="100" height="20" backcolor="#CCCCCC" uuid="4df31c76-067a-4da7-9fce-45bb73c83939"/>
+			</rectangle>
+			<rectangle>
+				<reportElement mode="Transparent" x="783" y="3" width="45" height="20" backcolor="#CCCCCC" uuid="53794875-f32d-4206-b649-f9a8e034cfa1"/>
+			</rectangle>
+			<rectangle>
+				<reportElement mode="Transparent" x="670" y="3" width="113" height="20" backcolor="#CCCCCC" uuid="71e9d265-fc55-4ada-a167-ca1813367bff"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="786" y="3" width="40" height="20" uuid="72fcb0d7-9f7f-43b0-bae3-005b1e2920aa"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+					<paragraph lineSpacing="1_1_2"/>
+				</textElement>
+				<text><![CDATA[Parcela]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="25" splitType="Stretch">
+			<textField>
+				<reportElement x="3" y="1" width="267" height="20" uuid="2371afbe-aebd-45a7-abc8-fb8281b886a8"/>
+				<textFieldExpression><![CDATA[$F{nco_nm_segurado}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="370" y="1" width="100" height="20" uuid="9a31dc4b-3a7d-49d1-9da0-524e3c5b6373"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{nco_date_str}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="270" y="1" width="100" height="20" uuid="4f98f3a3-c732-4a87-a933-37495360a263"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{tb_ano_mes_prod}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="470" y="1" width="100" height="20" uuid="bad24d04-8d1f-47e5-8313-270d77c30cfa"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{nco_nr_proposta}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="570" y="1" width="100" height="20" uuid="93ffcda9-35bf-4cb5-93df-45e7fe67e930"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{nco_comis}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="670" y="1" width="113" height="20" uuid="88b1320b-f93e-472d-b223-ac28acf0a47d"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{net_comis}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="783" y="1" width="45" height="20" uuid="3f35f218-545b-41e3-aaae-e16ed5549ead"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{nco_prest}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="30" splitType="Stretch">
+			<textField>
+				<reportElement x="670" y="3" width="113" height="20" uuid="d3ffa94d-ad5e-42dd-8728-71d9b809a945"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{sum_net_comis}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="349" y="2" width="131" height="20" uuid="3671a98b-3679-4d68-b956-923335614e34"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL de Comissão]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="570" y="3" width="100" height="20" uuid="fd7e3ef5-ca13-46fc-8662-46a39f45350d"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{sum_nco_comis}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="25" splitType="Stretch">
+			<textField>
+				<reportElement x="670" y="4" width="100" height="20" uuid="16992953-0fb0-496d-a766-72cbb22875fb"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="634" y="4" width="36" height="20" uuid="93e515ff-5ad1-4efe-800f-70de0cdae4c6"/>
+				<textElement>
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Página]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/templates/modeloSistema.xhtml">
+
+	<ui:define name="menu">
+		<ui:include src="/includes/menuPrincipal.xhtml" />
+	</ui:define>
+
+	<ui:define name="conteudo">
+		<h:form id="frmUsuListagem" widgetVar="tabelaUsuario">
+			<p:dataTable id="tblUsuario"
+				emptyMessage="Nenhum Registro Encontrado" value="#{MBProfissao.itens}"
+				var="item" filteredValue="#{MBProfissao.itensfiltrados}" paginator="true"
+				rows="8">
+
+				<f:facet name="header">
+					Profissões - Manutenção
+				</f:facet>
+
+				<f:facet name="footer">
+
+					<p:commandButton value="Novo"
+						actionListener="#{MBProfissao.prepararNovo}"
+						oncomplete="PF('dlgUsuario').show();"
+						update=":frmUsuNovo:pnlUsuNovo" />
+					<p:commandButton action="principal.xhtml?faces-redirect=true"
+						value="Cancelar" />
+
+				</f:facet>
+
+				<p:column headerText="ID Interno" >
+					<h:outputText value="#{item.tb_id_prof}" />
+				</p:column>
+
+				<p:column headerText="Profissão" >
+					<h:outputText value="#{item.tb_prof}" />
+				</p:column>
+
+				<p:column headerText="Opções">
+					<p:commandButton icon="ui-icon-trash"
+						title="Excluir"
+						oncomplete="PF('dlgExcluir').show();"
+						update=":frmExcluir:pnlExcNovo">
+						<f:setPropertyActionListener target="#{MBProfissao.profissao}"
+							value="#{item}" />
+					</p:commandButton>
+					<p:commandButton icon="ui-icon-pencil"
+						title="Editar dados"
+						oncomplete="PF('dlgEditar').show();"
+						update=":frmAlterar:pnlEditar">
+						<f:setPropertyActionListener target="#{MBProfissao.profissao}"
+							value="#{item}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+		<p:dialog widgetVar="dlgUsuario" closable="false" draggable="false"
+			modal="true" appendTo="@(body)" resizable="false" header="Novo Item">
+			<h:form id="frmUsuNovo">
+				<h:panelGrid id="pnlUsuNovo" columns="2">
+					<p:outputLabel value="ID Interno" />
+					<p:outputLabel value="#{MBProfissao.profissao.tb_id_prof}" />
+
+					<p:outputLabel value="Profissão" />
+					<p:inputText id="feedback" value="#{MBProfissao.profissao.tb_prof}"
+						size="25" maxlength="45" feedback="true" />
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton value="Gravar" actionListener="#{MBProfissao.novo}"
+						oncomplete="PF('dlgUsuario').hide();tabelaUsuario.clearfilters();"
+						update=":frmUsuListagem:tblUsuario :msgGlobal"
+						action="Profissao.xhtml?faces-redirect=true" />
+					<p:commandButton value="Cancelar"
+						onclick="PF('dlgUsuario').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+		<p:dialog widgetVar="dlgExcluir" closable="false" draggable="false"
+			modal="true" appendTo="@(body)" resizable="false"
+			header="Excluir Item">
+
+			<h:form id="frmExcluir">
+				<h:panelGrid id="pnlExcNovo" columns="2">
+					<h:outputText value="ID Interno" />
+					<h:outputText value="#{MBProfissao.profissao.tb_id_prof}" />
+
+					<h:outputText value="Estado Civil" />
+					<h:outputText value="#{MBProfissao.profissao.tb_prof}" />
+
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton value="Excluir" actionListener="#{MBProfissao.excluir}"
+						oncomplete="PF('dlgExcluir').hide(); tabelaUsuario.clearfilters();"
+						update=":frmUsuListagem:tblUsuario :msgGlobal"
+						action="Profissao.xhtml?faces-redirect=true" />
+					<p:commandButton value="Cancelar"
+						onclick="PF('dlgExcluir').hide();" />
+				</h:panelGrid>
+
+			</h:form>
+
+
+		</p:dialog>
+		<p:dialog widgetVar="dlgEditar" closable="false" draggable="false"
+			modal="true" appendTo="@(body)" resizable="false"
+			header="Editar Item">
+			<h:form id="frmAlterar">
+				<h:panelGrid id="pnlEditar" columns="2">
+					<h:outputText value="ID Interno" />
+					<h:outputText value="#{MBProfissao.profissao.tb_id_prof}" />
+
+					<h:outputText value="Estado Civil" />
+					<p:inputText value="#{MBProfissao.profissao.tb_prof}" size="25"
+						maxlength="45" />
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton value="Alterar" actionListener="#{MBProfissao.editar}"
+						oncomplete="PF('dlgEditar').hide(); tabelaUsuario.clearfilters();"
+						update=":frmUsuListagem:tblUsuario :msgGlobal"
+						action="Profissao.xhtml?faces-redirect=true" />
+					<p:commandButton value="Cancelar" onclick="PF('dlgEditar').hide();" />
+				</h:panelGrid>
+
+
+			</h:form>
+
+		</p:dialog>
+
+
+	</ui:define>
+
+</ui:composition>
+
+

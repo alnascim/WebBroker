@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+	<title>Login WebBroker</title>
+	<h:outputStylesheet library="css" name="estilos.css" />
+	<style type="text/css">
+#box {
+	width: 300px;
+	height: 100px;
+	background-color: #214;
+	border-radius: 10px;
+}
+</style>
+</h:head>
+<h:body>
+	<h:form>
+		<p:growl id="msgGlobal" life="2000" />
+		<p:layout fullPage="true">
+			<p:layoutUnit position="north" size="100" header="" resizable="false"
+				closable="false" collapsible="false">
+			</p:layoutUnit>
+			<p:layoutUnit position="south" size="100" header="" resizable="false"
+				closable="false" collapsible="false">
+			</p:layoutUnit>
+			<p:layoutUnit position="west" size="100" header="" resizable="false"
+				closable="false" collapsible="false">
+			</p:layoutUnit>
+			<p:layoutUnit position="east" size="100" header="" resizable="false"
+				closable="false" collapsible="false" effect="drop">
+			</p:layoutUnit>
+			<p:layoutUnit position="center">
+				<p:panelGrid columns="2" style="text-align: center;" border="0"
+					cellpadding="0">
+					<p:panelGrid columns="2" style="text-align: left;" border="0"
+						cellpadding="0">
+						<h:outputLabel for="login" value="Login do Usuário" />
+						<p:inputText size="10" maxlength="10" name="login_" id="login"
+							value="#{usuarioBean.usuario.username}" required="true"
+							requiredMessage="Digite o login!" />
+						<h:outputLabel for="senha" value="Senha do Usuário" />
+						<p:password size="8" maxlength="8" name="senha_" id="senha"
+							value="#{usuarioBean.usuario.userpwd}" required="true"
+							requiredMessage="Digite a Senha!" />
+						<p:commandButton id="cmdLogin2" value="Entrar no Sistema"
+							
+							action="#{usuarioBean.localizar}"
+							onerror="login.xhtml?faces-redirect=true" />
+						<p:commandButton id="cmd_sair" value="Sair do Sistema"
+							onclick="PF('dlgUsuario').hide();" action="#{usuarioBean.logout}" />
+					</p:panelGrid>
+				</p:panelGrid>
+			</p:layoutUnit>
+			<p:layoutUnit position="left">
+				<ui:insert name="esquerda" />
+			</p:layoutUnit>
+			<p:layoutUnit position="rigth">
+				<ui:insert name="direita" />
+			</p:layoutUnit>
+		</p:layout>
+	</h:form>
+</h:body>
+</html>

@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/templates/modeloSistema.xhtml">
+
+	<ui:define name="menu">
+		<ui:include src="/includes/menuPrincipal.xhtml" />
+	</ui:define>
+
+	<ui:define name="conteudo">
+
+		<h:form id="frmUsuConsulta" widgetVar="widgetVar_010">
+			<p:panel header="CONTAS A RECEBER" style="width: 85%">
+				<h:panelGrid id="pnlConsulta" columns="5">
+					<p:outputLabel for="D_INI" value="Data Inicio" />
+					<p:calendar id="D_INI"
+						value="#{MBContasReceber.jcontaspagar.pf_DataIni}" effect="fold"
+						locale="pt_BR" pattern="dd/MM/yyyy" />
+
+					<p:outputLabel for="D_FIM" value="Data Fim" />
+					<p:calendar id="D_FIM"
+						value="#{MBContasReceber.jcontaspagar.pf_DataFim}" effect="fold"
+						locale="pt_BR" pattern="dd/MM/yyyy" />
+				</h:panelGrid>
+				<p:commandButton value="Pesquisar"
+					actionListener="#{MBContasReceber.prepararPesquisa}"
+					update=":frmUsuListagem:pnlListar">
+				</p:commandButton>
+				<p:commandButton action="principal.xhtml?faces-redirect=true"
+					value="Voltar" />
+
+			</p:panel>
+
+		</h:form>
+		<h:form id="frmUsuListagem" widgetVar="widgetVar_001">
+			<h:panelGrid id="pnlListar">
+				<p:panelGrid columns="6" style="width: 205%">
+					<p:dataTable id="tbl_001"
+						emptyMessage="Nenhum Registro Encontrado."
+						value="#{MBContasReceber.itens}" var="item" paginator="true"
+						rows="8">
+						<f:facet name="header">
+						Contas a Pagar
+				        </f:facet>
+						<p:column headerText="Descrição do Pagamento"
+							style="width:90px;text-align:left;">
+							<f:facet name="header">
+								<h:outputText value="Descrição do Pagamento" />
+							</f:facet>
+							<h:outputText value="#{item.fee_name}" />
+						</p:column>
+
+						<p:column headerText="Data do Pagamento"
+							style="width:4px;text-align:center;">
+							<h:outputText value="#{item.pf_due_date}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+
+						<p:column style="width:3px;text-align:center;">
+							<f:facet name="header">
+								<h:outputText value="Parcela"
+									style="width:3px;text-align:center;" />
+							</f:facet>
+							<h:outputText value="#{item.installments}" />
+						</p:column>
+						<p:column headerText="Valor do Pagamento"
+							style="width:5px;text-align:right;">
+							<f:facet name="header">
+								<h:outputText value="Valor do Pagamento" />
+							</f:facet>
+							<h:outputText value="#{item.amount}" />
+						</p:column>
+						<p:column headerText="Pagador" style="width:10px;text-align:left;">
+							<f:facet name="header">
+								<h:outputText value="Pagador" />
+							</f:facet>
+							<h:outputText value="#{item.payer_name}" />
+						</p:column>
+						<p:column headerText="Conciliar Pagamento"
+							style="width:5px;text-align:center;">
+							<p:commandButton icon="ui-icon-calculator"
+								title="Conciliar Pagamento"
+								action="#{MBContasReceber.prepararListarFiltro}"
+								oncomplete="PF('dlgConta').show();"
+								update=":frmUsuListExtrato:pnlListar2">
+								<f:setPropertyActionListener
+									target="#{MBContasReceber.contaspagar}" value="#{item}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+				</p:panelGrid>
+				<p:commandButton value="Exportar" ajax="false">
+					<p:dataExporter type="xls"
+						postProcessor="#{MBContasReceber.postProcessXLS}" target="tbl_001"
+						fileName="ContasPagar" />
+				</p:commandButton>
+
+			</h:panelGrid>
+
+
+		</h:form>
+		<p:dialog widgetVar="dlgConta" closable="false" draggable="false"
+			modal="true" appendTo="@(body)" resizable="false"
+			header="Lançamentos em Conta Corrente">
+			<h:form id="frmUsuListExtrato" widgetVar="widgetVar_002">
+				<h:panelGrid id="pnlListar2">
+					<p:panelGrid columns="2" style="width: 100%">
+						<p:outputLabel value="Conciliar Pagamento Parcela   " />
+						<p:outputLabel value="#{MBContasReceber.contaspagar.amount}" />
+						<p:outputLabel value="Data do Vencimento da Parcela   " />
+						<p:outputLabel value="#{MBContasReceber.contaspagar.pf_due_date}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</p:outputLabel>
+					</p:panelGrid>
+					<p:panelGrid columns="3" style="width: 100%">
+						<p:dataTable id="tabela"
+							emptyMessage="Nenhum Registro Encontrado."
+							value="#{MBContasReceber.itensextrato}" var="item" paginator="true"
+							rows="8">
+
+							<f:facet name="footer">
+								<p:commandButton value="Voltar" onclick="PF('dlgConta').hide();" />
+							</f:facet>
+							<p:column headerText="Data"
+								style="width:5px;text-align:center;" >
+
+								<h:outputText value="#{item.d_data}">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="Valor (R$)"
+								style="width:5px;text-align:right;" >
+								<h:outputText value="#{item.c_debito}" />
+							</p:column>
+
+							<p:column headerText="Conciliar"
+								style="width:30px;text-align:center;">
+								<p:commandButton icon="ui-icon-calculator"
+									title="Conciliar Lançamento"
+									oncomplete="PF('dlgBaixar').show(); PF('dlgConta').hide();"
+									update=":frmBaixar:pnlBaixar">
+								</p:commandButton>
+							</p:column>
+
+						</p:dataTable>
+
+					</p:panelGrid>
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+		<p:dialog widgetVar="dlgBaixar" closable="false" draggable="false"
+			modal="true" appendTo="@(body)" resizable="false"
+			header="Confirma a Baixa do Lançamento ?">
+			<h:form id="frmBaixar">
+				<h:panelGrid id="pnlBaixar" columns="2">
+					<p:outputLabel value="Controle " />
+					<p:outputLabel value="#{MBContasReceber.contaspagar.p_ID}" />
+					<p:outputLabel value="Baixa do Pagamento R$ " />
+					<p:outputLabel value="#{MBContasReceber.contaspagar.amount}" />
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton value="Confirmar"
+						actionListener="#{MBContasReceber.baixarpagto}"
+						oncomplete="PF('dlgBaixar').hide();  widgetVar_001.clearfilters();"
+						update=":frmUsuListagem:tbl_001 :msgGlobal"
+						action="ContaPagar.xhtml?faces-redirect=true" />
+					<p:commandButton value="Voltar" onclick="PF('dlgBaixar').hide();" />
+				</h:panelGrid>
+
+			</h:form>
+
+		</p:dialog>
+	</ui:define>
+</ui:composition>
+
+

@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	<h:head>
+		<style>
+.meumenu .ui-menu-child {
+	width: 3700px !important;
+	display: inline-block;
+	padding: 0;
+}
+
+ui-menubutton .ui-button {
+	margin: 0;
+}
+</style>
+
+
+	</h:head>
+	<h:form id="mnu_master" enctype="multipart/form-data"
+		accept-charset="UTF-8">
+
+		<p:menuButton value="Cadastro de Pessoas - Usuários">
+			<p:menuitem value="Congêneres" icon="ui-icon-script"
+				outcome="/Pages/seguradora.xhtml" />
+			<p:menuitem value="Cliente Pessoa Jurídica" icon="ui-icon-script"
+				outcome="/Pages/cliente_pj.xhtml" />
+			<p:menuitem value="Cliente Pessoa Física" icon="ui-icon-script"
+				outcome="/Pages/cliente_pf.xhtml" />
+			<p:separator />
+			<p:separator />
+
+			<p:menuitem value="Beneficiário-Titular" icon="ui-icon-person"
+				outcome="/Pages/fisica.xhtml" />
+			<p:menuitem value="Dependente" icon="ui-icon-person"
+				outcome="/Pages/dependente.xhtml" />
+			<p:menuitem value="Angariador" icon="ui-icon-person"
+				outcome="/Pages/angariador.xhtml" />
+			<p:separator />
+			<p:menuitem value="Usuário do Sistema" icon="ui-icon-locked"
+				outcome="/Pages/usuario.xhtml"
+				rendered="#{usuarioBean.usuario.tb_function != 'AD'}" />
+			<p:separator />
+			<p:menuitem value="Homepage" url="http://www.lemara.com.br"
+				icon="ui-icon-home" />
+		</p:menuButton>
+		<p:menuButton value="Cadastro de Apólice">
+			<p:menuitem value="Apólice" icon="ui-icon-script"
+				outcome="/Pages/apolice.xhtml" />
+		</p:menuButton>
+		<p:menuButton value="Cadastro Geral">
+			<p:menuitem value="Produto" icon="ui-icon-person"
+				outcome="/Pages/Produto.xhtml" />
+			<p:menuitem value="Segmento-Produto" icon="ui-icon-person"
+				outcome="/Pages/Segmento.xhtml" />
+			<p:separator />
+			<p:separator />
+			<p:menuitem value="Grade de Comissão" icon="ui-icon-person"
+				outcome="/Pages/grade.xhtml" />
+			<p:separator />
+			<p:menuitem value="Cadastro de Agências" icon="ui-icon-person"
+				outcome="/Pages/Agencia.xhtml" />
+			<p:menuitem value="Profissões" icon="ui-icon-person"
+				outcome="/Pages/Profissao.xhtml" />
+			<p:menuitem value="Estado Civil" icon="ui-icon-person"
+				outcome="/Pages/EstadoCivil.xhtml" />
+			<p:menuitem value="Parentesco" icon="ui-icon-person"
+				outcome="/Pages/Parentesco.xhtml" />
+			<p:menuitem value="Tipo Pessoa " icon="ui-icon-person"
+				outcome="/Pages/Tipopessoafisica.xhtml" />
+			<p:separator />
+			<p:menuitem value="Sucursal" icon="ui-icon-person" />
+			<p:separator />
+
+		</p:menuButton>
+
+		<p:menuButton value=" Relatórios ">
+			<p:menuitem value="Extrato do Corretor"
+				outcome="/Pages/ExtratoCorretor.xhtml" icon="ui-icon-folder-open" />
+			<p:menuitem value="Extrato do Angariador"
+				outcome="/Pages/ExtratoAngariador.xhtml" icon="ui-icon-folder-open" />
+			<p:separator />
+			<p:separator />
+
+			<p:menuitem value="Comissionamento "
+				outcome="/Pages/ListaComissao.xhtml" icon="ui-icon-folder-open" />
+			<p:separator />
+			<p:menuitem value="Faturamento Analítico"
+				outcome="/Pages/ListaFatura.xhtml" icon="ui-icon-folder-open" />
+			<p:menuitem value="Faturamento Sintético"
+				outcome="/Pages/ListaFaturaSint.xhtml" icon="ui-icon-folder-open" />
+
+			<p:separator />
+			<p:menuitem value="Parcelas em Atraso "
+				outcome="/Pages/ListaInadimp.xhtml" icon="ui-icon-folder-open" />
+			<p:separator />
+			<p:separator />
+			<p:menuitem value="Relatório de Produção Por Sucursal - Agência"
+				outcome="/Pages/Report_Filtro_001.xhtml" icon="ui-icon-folder-open" />
+			<p:separator />
+
+			<p:menuitem value="Relatório Quantidade de Vidas"
+				outcome="/Pages/Report_003.xhtml" icon="ui-icon-folder-open" />
+		</p:menuButton>
+
+		<p:menuButton value="Indicadores(Comissão e Fatura)">
+			<p:menuitem value="Comissão-Resumo" icon="ui-icon-folder-open"
+				outcome="/Pages/ListaComissaoResumo.xhtml" styleClass="meumenu" />
+			<p:separator />
+
+		</p:menuButton>
+		<p:menuButton value=" Upload ">
+			<p:menuitem value="Upload Site 100%" icon="ui-icon-folder-open"
+				outcome="/Pages/uploadFile.xhtml" style="width: 950px;" />
+			<p:separator />
+			<p:menuitem value="Upload Extrato Bancário" style="width: 950px;"
+				outcome="/Pages/UploadExtratoBanco.xhtml" icon="ui-icon-folder-open"
+				rendered="#{usuarioBean.usuario.tb_function != 'AD'}" />
+			<p:separator />
+
+		</p:menuButton>
+		<p:menuButton value="Controle - Financeiro" styleClass="meumenu">
+			<p:menuitem value="Consulta Extrato Bancário" icon="ui-icon-person"
+				outcome="/Pages/ExtratoBancario.xhtml"
+				rendered="#{usuarioBean.usuario.tb_function != 'AD'}" />
+			<p:separator />
+			<p:separator />
+			<p:menuitem value="Manutenção de Lançamentos" icon="ui-icon-person"
+				outcome="/Pages/ManutencaoLancamento.xhtml"
+				rendered="#{usuarioBean.usuario.tb_function != 'AD'}" />
+			<p:separator />
+			<p:separator />
+			<p:menuitem value="Cadastro Pagadores" icon="ui-icon-person"
+				outcome="/Pages/Pagadores.xhtml"
+				rendered="#{usuarioBean.usuario.tb_function != 'AD'}" />
+
+			<p:separator />
+			<p:menuitem value="Contas a Pagar" icon="ui-icon-person"
+				outcome="/Pages/ContasPagar.xhtml"
+				rendered="#{usuarioBean.usuario.tb_function != 'AD'}" />
+
+			<p:menuitem value="Contas a Receber" icon="ui-icon-person"
+				outcome="/Pages/ConciliacaoReceitas.xhtml"
+				rendered="#{usuarioBean.usuario.tb_function != 'AD'}" />
+
+			<p:separator />
+			<p:separator />
+
+
+			<p:menuitem value="Resultado Operacional Mensal"
+				icon="ui-icon-person" outcome="/Pages/Faturamento.xhtml"
+				rendered="#{usuarioBean.usuario.tb_function != 'AD'}" />
+			<p:separator />
+			<p:menuitem value="Extrator de Comissão" icon="ui-icon-person"
+				outcome="/Pages/ExtratoCorretor.xhtml"
+				rendered="#{usuarioBean.usuario.tb_function != 'AD'}" />
+			<p:separator />
+
+		</p:menuButton>
+
+		<p:commandButton id="cmd_sair" value="Sair do Sistema"
+			action="login.xhtml?faces-redirect=true" />
+
+	</h:form>
+
+</ui:composition>

@@ -1,0 +1,506 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 4.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	template="/templates/modeloSistema.xhtml">
+
+	<ui:define name="menu">
+		<ui:include src="/includes/menuPrincipal.xhtml" />
+	</ui:define>
+
+	<ui:define name="conteudo">
+		<h:form id="frmUsuListagem" widgetVar="widgetVar_001">
+			<p:dataTable id="tbl_001" emptyMessage="Nenhum Registro Encontrado."
+				value="#{MBApolice.itens}"
+				filteredValue="#{MBApolice.itensfiltrados}"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+				var="item" paginator="true" rows="8">
+				<f:facet name="header">
+						Apólices
+				</f:facet>
+				<f:facet name="footer">
+					<p:commandButton value="Novo"
+						actionListener="#{MBApolice.prepararNovo}"
+						oncomplete="PF('dlgUsuario').show();"
+						update=":frmUsuNovo:pnlUsuNovo " />
+					<p:commandButton action="principal.xhtml?faces-redirect=true"
+						value="Sair" />
+
+					<p:commandButton value="Exportar" ajax="false">
+						<p:dataExporter type="xls"
+							postProcessor="#{MBApolice.postProcessXLS}" target="tbl_001"
+							fileName="ListaApolice" />
+					</p:commandButton>
+
+
+				</f:facet>
+
+				<p:column headerText="Mês de Produção"
+					sortBy="#{item.tb_ano_mes_prod}" filterBy="#{item.tb_ano_mes_prod}"
+					style="width:60px;text-align:left;">
+					<f:facet name="header">
+						<h:outputText value="Mês de Produção" />
+					</f:facet>
+					<h:outputText value="#{item.tb_ano_mes_prod}" />
+				</p:column>
+
+				<p:column headerText="Número Apólice"
+					style="width:10px;text-align:center;" filterBy="#{item.id_apolice}">
+					<p:commandLink actionListener="#{MBApolice.prepararEditar}"
+						style="width:10px;text-align:center;"
+						oncomplete="PF('dlgEditar').show();"
+						update=":frmAlterar:pnlEditar">
+						<f:setPropertyActionListener target="#{MBApolice.apolice}"
+							value="#{item}" />
+						<h:outputText value="#{item.id_apolice}" />
+					</p:commandLink>
+				</p:column>
+				<p:column headerText="Status Apólice"
+					filterBy="#{item.tb_StatusApo}"
+					style="width:5px;text-align:center;">
+					<f:facet name="header">
+						<h:outputText value="Status Apólice" />
+					</f:facet>
+					<h:outputText value="#{item.tb_StatusApo}" />
+				</p:column>
+
+				<p:column headerText="Início Vigência"
+					filterBy="#{item.pf_DataIniVig}"
+					style="width:5px;text-align:center;">
+					<f:facet name="header">
+						<h:outputText value="Início Vigência" />
+					</f:facet>
+					<h:outputText value="#{item.pf_DataIniVig}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Fim Vigência" filterBy="#{item.pf_DataFimVig}"
+					style="width:5px;text-align:center;">
+					<f:facet name="header">
+						<h:outputText value="Fim Vigência" />
+					</f:facet>
+					<h:outputText value="#{item.pf_DataFimVig}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Estipulante" filterBy="#{item.estipulante}">
+					<f:facet name="header">
+						<h:outputText value="Estipulante" />
+					</f:facet>
+					<h:outputText value="#{item.estipulante}" />
+				</p:column>
+
+				<p:column headerText="Nro de Vidas"
+					style="width:15px;text-align:center;" filterBy="#{item.tb_vidas}">
+					<f:facet name="header">
+						<h:outputText value="Nro de Vidas" />
+					</f:facet>
+					<h:outputText value="#{item.tb_vidas}" />
+				</p:column>
+
+				<p:column headerText="Valor do Prêmio"
+					filterBy="#{item.tb_vl_premio}"
+					style="width:120px;text-align:right;">
+					<h:outputText value="#{item.tb_vl_premio}">
+						<f:convertNumber pattern="####,##0.00" />
+					</h:outputText>
+					<f:facet name="header">
+						<h:outputText value="Valor do Prêmio" />
+					</f:facet>
+				</p:column>
+				<p:column headerText="Segmento" sortBy="#{item.segmento}"
+					style="width:10px;text-align:center;" filterBy="#{item.segmento}">
+					<h:outputText value="#{item.segmento}" />
+					<f:facet name="header">
+						<h:outputText value="Segmento" />
+					</f:facet>
+				</p:column>
+
+				<p:column headerText="Agência Produtora"
+					sortBy="#{item.tb_nome_agencia}"
+					style="width:150px;text-align:left;"
+					filterBy="#{item.tb_nome_agencia}">
+					<f:facet name="header">
+						<h:outputText value="Agência Produtora" />
+					</f:facet>
+					<h:outputText value="#{item.tb_nome_agencia}" />
+				</p:column>
+				<p:column headerText="Produtor" sortBy="#{item.nome_produtor}"
+					style="width:30px;text-align:left;"
+					filterBy="#{item.nome_produtor}">
+					<f:facet name="header">
+						<h:outputText value="Produtor" />
+					</f:facet>
+					<h:outputText value="#{item.nome_produtor}" />
+				</p:column>
+
+				<p:column headerText="Opções">
+					<p:commandButton icon="ui-icon-trash" title="Excluir Apólice"
+						oncomplete="PF('dlgExcluir').show();"
+						update=":frmExcluir:pnlExcNovo">
+						<f:setPropertyActionListener target="#{MBApolice.apolice}"
+							value="#{item}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+		<p:dialog widgetVar="dlgUsuario" closable="false" draggable="false"
+			modal="true" appendTo="@(body)" resizable="false"
+			header="02 - Dados do Apólice">
+			<h:form id="frmUsuNovo">
+				<h:panelGrid id="pnlUsuNovo">
+					<p:panelGrid columns="8" style="width: 100%">
+						<p:outputLabel value="Ano Mês de Produção" />
+						<p:inputText id="data" value="#{MBApolice.data}" disabled="true"
+							style="width:100%" />
+					</p:panelGrid>
+					<p:panelGrid columns="8" style="width: 100%">
+						<p:outputLabel value="Número da Apólice" />
+						<p:inputText id="ncmae" value="#{MBApolice.apolice.id_apolice}"
+							size="21" required="true" maxlength="21"
+							requiredMessage="Número da Apólice é obrigatório."
+							immediate="false" />
+						<p:outputLabel for="eff_date" value="Início de Vigência" />
+						<p:calendar id="eff_date"
+							value="#{MBApolice.apolice.pf_DataIniVig}" effect="fold"
+							locale="pt_BR" pattern="dd/MM/yyyy" />
+						<p:outputLabel for="exp_date" value="Fim de Vigência" />
+						<p:calendar id="exp_date"
+							value="#{MBApolice.apolice.pf_DataFimVig}" effect="fold"
+							locale="pt_BR" pattern="dd/MM/yyyy" />
+					</p:panelGrid>
+					<p:panelGrid id="id999" columns="6" style="width: 100%">
+						<p:outputLabel value="Congênere" />
+						<p:selectOneMenu style="width:200px;"
+							value="#{MBApolice.apolice.congenere_combo.tb_idpj}"
+							filter="true" required="true"
+							requiredMessage="Campo Congênere é obrigatório."
+							immediate="false">
+							<f:selectItem itemValue="" itemLabel="Selecione Congênere" />
+							<f:selectItems value="#{MBApolice.comboCongenere}" var="item"
+								itemValue="#{item.tb_idpj}" itemLabel="#{item.tb_razao}" />
+
+							<p:ajax event="change" listener="#{MBApolice.getprodfromcia}"
+								update=":frmUsuNovo:id999 " />
+
+						</p:selectOneMenu>
+						<p:outputLabel value="Estipulante" />
+						<p:selectOneMenu style="width:200px;"
+							value="#{MBApolice.apolice.empresa_combo.tb_idpj}" filter="true"
+							required="true"
+							requiredMessage="Campo Estipulante é obrigatório."
+							immediate="false">
+							<f:selectItem itemValue="" itemLabel="Selecione Estipulante" />
+							<f:selectItems value="#{MBApolice.comboEmpresa}" var="item"
+								itemValue="#{item.tb_idpj}" itemLabel="#{item.tb_razao}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Ramo - Segmento" />
+						<p:selectOneMenu value="#{MBApolice.apolice.segmento_combo.id}"
+							style="width:200px;" required="true"
+							requiredMessage="Campo Segmento é obrigatório." immediate="false"
+							filter="true">
+							<f:selectItem itemValue="" itemLabel="Selecione Rampo-Segmento" />
+							<f:selectItems value="#{MBApolice.comboSegmento}" var="item"
+								itemValue="#{item.id}" itemLabel="#{item.tb_segmento}">
+							</f:selectItems>
+						</p:selectOneMenu>
+
+					</p:panelGrid>
+
+
+					<p:panelGrid columns="6" style="width: 100%">
+						<p:outputLabel for="effect1" value="Data de Entrada Corretora" />
+						<p:calendar id="effect1"
+							value="#{MBApolice.apolice.pf_DataCorretora}" effect="fold"
+							locale="pt_BR" pattern="dd/MM/yyyy" />
+
+						<p:outputLabel for="effect2" value="Data de Entrada Seguradora" />
+						<p:calendar id="effect2"
+							value="#{MBApolice.apolice.pf_DataSeguradora}" effect="fold"
+							locale="pt_BR" pattern="dd/MM/yyyy" />
+
+						<p:outputLabel for="effect3" value="Data CCB" />
+						<p:calendar id="effect3" value="#{MBApolice.apolice.pf_DataCCB}"
+							effect="fold" locale="pt_BR" pattern="dd/MM/yyyy" />
+
+					</p:panelGrid>
+					<p:panelGrid columns="6" style="width: 100%">
+						<p:outputLabel for="effect4" value="Data Crédito 1a-Parcela" />
+						<p:calendar id="effect4" value="#{MBApolice.apolice.pf_DataC1}"
+							effect="fold" locale="pt_BR" pattern="dd/MM/yyyy" />
+
+						<p:outputLabel for="effect5" value="Data Crédito 2a-Parcela" />
+						<p:calendar id="effect5" value="#{MBApolice.apolice.pf_DataC2}"
+							effect="fold" locale="pt_BR" pattern="dd/MM/yyyy" />
+
+						<p:outputLabel for="effect6" value="Data Crédito 3a-Parcela" />
+						<p:calendar id="effect6" value="#{MBApolice.apolice.pf_DataC3}"
+							effect="fold" locale="pt_BR" pattern="dd/MM/yyyy" />
+
+					</p:panelGrid>
+
+					<p:panelGrid columns="6" style="width: 100%">
+						<p:outputLabel value="Valor do Prêmio" style="font-weight:bold" />
+						<p:inputText value="#{MBApolice.apolice.sValorPremio}">
+							<f:convertNumber pattern="####,##0.00" />
+						</p:inputText>
+
+						<p:outputLabel value="Nro de Vidas" />
+						<p:inputText value="#{MBApolice.apolice.tb_vidas}" size="4"
+							maxlength="4" />
+
+						<p:outputLabel for="console" value="Status:" />
+						<p:selectOneMenu id="console"
+							value="#{MBApolice.apolice.tb_StatusApo}" style="width:125px">
+							<f:selectItem itemLabel="Ativo" itemValue="S" />
+							<f:selectItem itemLabel="Inativo" itemValue="N" />
+						</p:selectOneMenu>
+					</p:panelGrid>
+					<p:panelGrid columns="6" style="width:200px;">
+						<p:outputLabel value="Angariador" />
+						<p:selectOneMenu style="width:150px;"
+							value="#{MBApolice.apolice.angariador_combo.idtb_pessoafisica}"
+							filter="true" required="true"
+							requiredMessage="Angariador é Obrigatório" immediate="false">
+							<f:selectItem itemValue="" itemLabel="Angariador" />
+							<f:selectItems value="#{MBApolice.comboAngariador}" var="item"
+								itemValue="#{item.idtb_pessoafisica}"
+								itemLabel="#{item.tb_pf_nome}" />
+						</p:selectOneMenu>
+						<p:outputLabel value="Sucursal" />
+						<p:selectOneMenu style="width:150px;"
+							value="#{MBApolice.apolice.combo_sucursal.id_suc}" filter="true"
+							required="true" requiredMessage="Sucursal é Obrigatório"
+							immediate="false">
+
+							<f:selectItem itemValue="" itemLabel="Sucursal" />
+							<f:selectItems value="#{MBApolice.comboSucursal}" var="item"
+								itemValue="#{item.id_suc}" itemLabel="#{item.tb_sucursal}" />
+						</p:selectOneMenu>
+						<p:outputLabel value="Agência" />
+						<p:selectOneMenu style="width:150px;"
+							value="#{MBApolice.apolice.pagencia_combo.tb_cod_agencia}"
+							filter="true" required="true"
+							requiredMessage="Agência é Obrigatório" immediate="false">
+
+							<f:selectItem itemValue="" itemLabel="Agência Produtora" />
+							<f:selectItems value="#{MBApolice.comboAgencia}" var="item"
+								itemValue="#{item.tb_cod_agencia}"
+								itemLabel="#{item.tb_nome_agencia}" />
+						</p:selectOneMenu>
+
+					</p:panelGrid>
+				</h:panelGrid>
+
+				<h:panelGrid columns="2">
+
+					<p:commandButton value="Gravar" actionListener="#{MBApolice.novo}"
+						oncomplete="PF('dlgUsuario').hide(); widgetVar_001.clearfilters();"
+						update=":frmUsuListagem:tbl_001 :msgGlobal"
+						action="apolice.xhtml?faces-redirect=true"
+						onerror="apolice.xhtml?faces-redirect=true" />
+
+					<p:commandButton value="Sair" onclick="PF('dlgUsuario').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog widgetVar="dlgExcluir" closable="false" draggable="false"
+			modal="true" appendTo="@(body)" resizable="false"
+			header="Excluir Apólice">
+			<h:form id="frmExcluir">
+				<h:panelGrid id="pnlExcNovo" columns="2">
+					<p:outputLabel value="Numero da Apólice   " />
+					<h:outputText value="#{MBApolice.apolice.id_apolice}" />
+
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton value="Excluir"
+						actionListener="#{MBApolice.excluir}"
+						oncomplete="PF('dlgExcluir').hide(); widgetVar_001.clearfilters();"
+						update=":frmUsuListagem:tbl_001 :msgGlobal"
+						action="apolice.xhtml?faces-redirect=true" />
+
+					<p:commandButton value="Sair" onclick="PF('dlgExcluir').hide();" />
+				</h:panelGrid>
+
+			</h:form>
+
+		</p:dialog>
+
+		<p:dialog widgetVar="dlgEditar" closable="false" draggable="false"
+			modal="true" appendTo="@(body)" resizable="false"
+			header="Editar Apólice">
+			<h:form id="frmAlterar">
+				<h:panelGrid id="pnlEditar">
+					<p:panelGrid columns="6" style="width: 100%">
+
+						<p:outputLabel value="Ano Mês de Produção"
+							style="font-weight:bold" />
+						<p:inputText id="data" value="#{MBApolice.data}" disabled="true"
+							style="width: 50%" />
+					</p:panelGrid>
+
+					<p:panelGrid columns="6" style="width: 100%">
+
+						<p:outputLabel value="Número da Apólice" style="font-weight:bold" />
+						<p:outputLabel value="#{MBApolice.apolice.id_apolice}" size="21"
+							maxlength="21" />
+
+						<p:outputLabel for="eff_date" value="Início de Vigência"
+							style="font-weight:bold" />
+						<p:calendar id="eff_date"
+							value="#{MBApolice.apolice.pf_DataIniVig}" locale="pt_BR"
+							pattern="dd/MM/yyyy" showOn="button" />
+
+						<p:outputLabel for="exp_date" value="Fim de Vigência"
+							style="font-weight:bold" />
+						<p:calendar id="exp_date"
+							value="#{MBApolice.apolice.pf_DataFimVig}" locale="pt_BR"
+							pattern="dd/MM/yyyy" showOn="button" />
+
+					</p:panelGrid>
+					<p:panelGrid id="id998" columns="6" style="width: 100%">
+						<p:outputLabel value="Congênere" />
+						<p:selectOneMenu style="width:200px;"
+							value="#{MBApolice.apolice.congenere_combo.tb_idpj}"
+							filter="true" required="true"
+							requiredMessage="Campo Congênere é obrigatório."
+							immediate="false">
+							<f:selectItem itemValue="" itemLabel="Selecione Congênere" />
+							<f:selectItems value="#{MBApolice.comboCongenere}" var="item"
+								itemValue="#{item.tb_idpj}" itemLabel="#{item.tb_razao}" />
+
+							<p:ajax event="change" listener="#{MBApolice.getprodfromcia}"
+								update=":frmAlterar:id998 " />
+
+						</p:selectOneMenu>
+						<p:outputLabel value="Estipulante" />
+						<p:selectOneMenu style="width:200px;"
+							value="#{MBApolice.apolice.empresa_combo.tb_idpj}" filter="true"
+							required="true"
+							requiredMessage="Campo Estipulante é obrigatório."
+							immediate="false">
+							<f:selectItem itemValue="" itemLabel="Selecione Estipulante" />
+							<f:selectItems value="#{MBApolice.comboEmpresa}" var="item"
+								itemValue="#{item.tb_idpj}" itemLabel="#{item.tb_razao}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Ramo - Segmento" />
+						<p:selectOneMenu value="#{MBApolice.apolice.segmento_combo.id}"
+							style="width:200px;" required="true"
+							requiredMessage="Campo Segmento é obrigatório." immediate="false"
+							filter="true">
+							<f:selectItem itemValue="" itemLabel="Selecione Rampo-Segmento" />
+							<f:selectItems value="#{MBApolice.comboSegmento}" var="item"
+								itemValue="#{item.id}" itemLabel="#{item.tb_segmento}">
+							</f:selectItems>
+						</p:selectOneMenu>
+
+					</p:panelGrid>
+					<p:panelGrid columns="6" style="width: 100%">
+						<p:outputLabel for="effect1" value="Data de Entrada Corretora"
+							style="font-weight:bold" />
+						<p:calendar id="effect1"
+							value="#{MBApolice.apolice.pf_DataCorretora}" locale="pt_BR"
+							pattern="dd/MM/yyyy" showOn="button" />
+
+						<p:outputLabel for="effect2" value="Data de Entrada Seguradora"
+							style="font-weight:bold" />
+						<p:calendar id="effect2"
+							value="#{MBApolice.apolice.pf_DataSeguradora}" locale="pt_BR"
+							pattern="dd/MM/yyyy" showOn="button" />
+
+						<p:outputLabel for="effect3" value="Data CCB"
+							style="font-weight:bold" />
+						<p:calendar id="effect3" value="#{MBApolice.apolice.pf_DataCCB}"
+							locale="pt_BR" pattern="dd/MM/yyyy" showOn="button" />
+					</p:panelGrid>
+					<p:panelGrid columns="6" style="width: 100%">
+						<p:outputLabel for="effect4" value="Data Crédito 1a-Parcela"
+							style="font-weight:bold" />
+						<p:calendar id="effect4" value="#{MBApolice.apolice.pf_DataC1}"
+							locale="pt_BR" pattern="dd/MM/yyyy" showOn="button" />
+
+						<p:outputLabel for="effect5" value="Data Crédito 2a-Parcela"
+							style="font-weight:bold" />
+						<p:calendar id="effect5" value="#{MBApolice.apolice.pf_DataC2}"
+							effect="fold" locale="pt_BR" pattern="dd/MM/yyyy" showOn="button" />
+
+						<p:outputLabel for="effect6" value="Data Crédito 3a-Parcela"
+							style="font-weight:bold" />
+						<p:calendar id="effect6" value="#{MBApolice.apolice.pf_DataC3}"
+							effect="fold" locale="pt_BR" pattern="dd/MM/yyyy" showOn="button" />
+					</p:panelGrid>
+					<p:panelGrid columns="6" style="width: 100%">
+						<p:outputLabel for="console" value="Status da Apólice"
+							style="font-weight:bold" />
+						<p:selectOneMenu id="console"
+							value="#{MBApolice.apolice.tb_StatusApo}">
+							<f:selectItem itemLabel="Ativo" itemValue="S" />
+							<f:selectItem itemLabel="Inativo" itemValue="N" />
+						</p:selectOneMenu>
+						<p:outputLabel value="Nro de Vidas" style="font-weight:bold" />
+						<p:inputText value="#{MBApolice.apolice.tb_vidas}" size="3"
+							maxlength="3" />
+						<p:outputLabel value="Valor do Prêmio" style="font-weight:bold" />
+						<p:inputText value="#{MBApolice.apolice.sValorPremio}">
+							<f:convertNumber pattern="####,##0.00" />
+						</p:inputText>
+					</p:panelGrid>
+					<p:panelGrid columns="6" style="width: 100%">
+						<p:outputLabel value="Angariador" style="font-weight:bold" />
+						<p:selectOneMenu value="#{MBApolice.apolice.idtb_pessoafisica}"
+							required="true" requiredMessage="Angariador é Obrigatório"
+							filter="true">
+							<f:selectItems value="#{MBApolice.comboAngariador}" var="item"
+								itemValue="#{item.idtb_pessoafisica}"
+								itemLabel="#{item.tb_pf_nome}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Sucursal" style="font-weight:bold" />
+						<p:selectOneMenu value="#{MBApolice.apolice.id_sucursal}"
+							required="true" requiredMessage="Sucursal é Obrigatório"
+							filter="true">
+							<f:selectItems value="#{MBApolice.comboSucursal}" var="item"
+								itemValue="#{item.id_suc}" itemLabel="#{item.tb_sucursal}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Agência Produtora" style="font-weight:bold" />
+						<p:selectOneMenu value="#{MBApolice.apolice.id_agencia}"
+							required="true" requiredMessage="Agência Produtora é Obrigatório"
+							filter="true">
+							<f:selectItems value="#{MBApolice.comboAgencia}" var="item"
+								itemValue="#{item.tb_cod_agencia}"
+								itemLabel="#{item.tb_nome_agencia}" />
+						</p:selectOneMenu>
+
+					</p:panelGrid>
+
+				</h:panelGrid>
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Alterar"
+						actionListener="#{MBApolice.editar}"
+						oncomplete="PF('dlgEditar').hide(); widgetVar_001.clearfilters();"
+						update=":frmUsuListagem:tbl_001 :msgGlobal"
+						action="apolice.xhtml?faces-redirect=true"
+						onerror="apolice.xhtml?faces-redirect=true" />
+
+					<p:commandButton value="Sair" onclick="PF('dlgEditar').hide();" />
+				</h:panelGrid>
+
+			</h:form>
+
+		</p:dialog>
+
+	</ui:define>
+
+</ui:composition>

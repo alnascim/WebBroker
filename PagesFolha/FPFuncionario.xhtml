@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/templates/modeloSistema.xhtml">
+
+	<ui:define name="conteudo">
+		<h:form id="frmUsuConsulta" widgetVar="widgetVar_010">
+			<p:panel header="Manutenção de Pagamentos">
+				<h:panelGrid id="pnlConsulta" columns="2">
+					<p:outputLabel for="D_INI" value="Data Inicio" />
+					<p:calendar id="D_INI"
+						value="#{MBContasPagar.contaspagar.pf_DataIni}" effect="fold"
+						locale="pt_BR" pattern="dd/MM/yyyy" />
+
+					<p:outputLabel for="D_FIM" value="Data Fim" />
+					<p:calendar id="D_FIM"
+						value="#{MBContasPagar.contaspagar.pf_DataFim}" effect="fold"
+						locale="pt_BR" pattern="dd/MM/yyyy" />
+
+
+					<p:commandButton value="Pesquisar"
+						actionListener="#{MBContasPagar.prepararPesquisa}"
+						update=":frmUsuListagem:pnlListar">
+					</p:commandButton>
+				</h:panelGrid>
+
+			</p:panel>
+		</h:form>
+		<h:form id="frmUsuListagem" widgetVar="widgetVar_001">
+			<h:panelGrid id="pnlListar">
+				<p:panelGrid columns="10" style="width: 270%">
+					<p:dataTable id="tbl_001"
+						emptyMessage="Nenhum Registro Encontrado."
+						filteredValue="#{MBContasPagar.itensfiltrados}"
+						value="#{MBContasPagar.itens}" var="item" paginator="true"
+						rows="8">
+						<f:facet name="header">
+						Contas a Pagar
+				</f:facet>
+						<f:facet name="footer">
+							<p:commandButton action="principal.xhtml?faces-redirect=true"
+								value="Voltar" />
+						</f:facet>
+						<p:column headerText="Descrição do Pagamento"
+							style="width:60px;text-align:left;">
+							<f:facet name="header">
+								<h:outputText value="Descrição do Pagamento" />
+							</f:facet>
+							<h:outputText value="#{item.fee_name}" />
+						</p:column>
+						<p:column headerText="Data do Pagamento"
+							style="width:10px;text-align:center;">
+							<f:facet name="header">
+								<h:outputText value="Data do Pagamento" />
+							</f:facet>
+							<h:outputText value="#{item.due_date}" />
+						</p:column>
+						<p:column headerText="Valor do Pagamento"
+							style="width:60px;text-align:left;">
+							<f:facet name="header">
+								<h:outputText value="Valor do Pagamento" />
+							</f:facet>
+							<h:outputText value="#{item.amount}" />
+						</p:column>
+						<p:column headerText="Pagador" style="width:60px;text-align:left;">
+							<f:facet name="header">
+								<h:outputText value="Pagador" />
+							</f:facet>
+							<h:outputText value="#{item.payer_name}" />
+						</p:column>
+					</p:dataTable>
+				</p:panelGrid>
+			</h:panelGrid>
+		</h:form>
+	</ui:define>
+</ui:composition>
+
+

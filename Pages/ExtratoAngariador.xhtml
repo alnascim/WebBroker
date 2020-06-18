@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/templates/modeloSistema.xhtml">
+
+	<ui:define name="menu">
+		<ui:include src="/includes/menuPrincipal.xhtml" />
+	</ui:define>
+
+	<ui:define name="conteudo">
+		
+		<h:form id="formLista" widgetVar="widgetVar_001">
+			<p:panel>
+				<p:dataTable id="tabela" emptyMessage="Nenhum Registro Encontrado."
+					value="#{MBExtratoCom.itens}"
+					filteredValue="#{MBExtratoCom.itensfiltrados}"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+					var="item" paginator="true" rows="8">
+					<f:facet name="header">Relatório Repasse Angariador</f:facet>
+					<f:facet name="footer">
+						<p:commandButton action="principal.xhtml?faces-redirect=true"
+							value="Voltar" />
+					</f:facet>
+					<p:column headerText="Angariador" filterBy="#{item.tb_pf_nome}" >
+						<h:outputText value="#{item.tb_pf_nome}" />
+					</p:column>
+					<p:column headerText="Segmento" filterBy="#{item.segmento}" >
+						<h:outputText value="#{item.segmento}" />
+					</p:column>					
+					<p:column headerText="Mês Fechamento" filterBy="#{item.nco_date_str}" >
+						<h:outputText value="#{item.nco_date_str}" />
+					</p:column>
+					
+					<p:column headerText="Comissão Angariador"
+						style="text-align: center">
+						<h:outputText value="#{item.net_comis}" />
+					</p:column>
+					<p:column headerText="Opções">
+
+						<p:commandButton icon="ui-icon-print" title="Imprimir Extrato"
+							oncomplete="PF('dlgPrint').show();" update=":frmPrint:pnlPrint">
+							<f:setPropertyActionListener target="#{MBExtratoCom.PExtratoComissao}"
+								value="#{item}" />
+						</p:commandButton>
+						
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+
+		</h:form>
+
+		<p:dialog widgetVar="dlgPrint" closable="false" draggable="false"
+			modal="true" appendTo="@(body)" resizable="false"
+			header="Confirma Impressão ? ">
+			<h:form id="frmPrint">
+				<h:panelGrid id="pnlPrint" columns="2">
+					<p:outputLabel value="Angariador  " />
+					<h:outputText value="#{MBExtratoCom.PExtratoComissao.tb_pf_nome}" />
+					<p:outputLabel value="Data Movimento " />
+					<h:outputText value="#{MBExtratoCom.PExtratoComissao.nco_date_str}" />
+					<p:outputLabel value="Segmento " />
+					<h:outputText value="#{MBExtratoCom.PExtratoComissao.segmento}" />
+
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton value="Emitir"
+						actionListener="#{MBExtratoCom.call_rpt_angariador}" ajax="false"
+						oncomplete="PF('dlgPrint').hide(); "
+						action="ExtratoAngariador.xhtml?faces-redirect=true" />
+					<p:commandButton value="Cancelar" onclick="PF('dlgPrint').hide();" />
+				</h:panelGrid>
+
+			</h:form>
+
+		</p:dialog>
+		
+	</ui:define>
+</ui:composition>
+
+

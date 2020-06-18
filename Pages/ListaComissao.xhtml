@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/templates/modeloSistema.xhtml">
+
+	<ui:define name="menu">
+		<ui:include src="/includes/menuPrincipal.xhtml" />
+	</ui:define>
+
+	<ui:define name="conteudo">
+		<h:form id="frmUsuListagem" widgetVar="tabelaUsuario">
+			<p:dataTable id="tblUsuario"
+				emptyMessage="Nenhum Registro Encontrado"
+				value="#{MBListaComissao.itens}" var="item"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+				filteredValue="#{MBListaComissao.itensfiltrados}" paginator="true"
+				rows="8">
+
+				<f:facet name="header">
+					Comissionamento Primeira e Segunda Parcelas.
+					<div align="left">
+						<p:outputLabel value="Data Faturamento - " />
+
+						<input type="text" id="1" name="txtBeginDate" size="10"
+							maxlength="10" /> <b></b> <input type="text" id="2"
+							name="txtEndDate" size="10" maxlength="10" /> <b></b>
+
+						<p:commandButton value="Pesquisar"
+							actionListener="#{MBListaComissao.prepararListar}"
+							oncomplete="PF('dlgListar').show();"
+							update=":frmListar:pnlListar">
+						</p:commandButton>
+					</div>
+				</f:facet>
+
+				<f:facet name="footer">
+					<p:commandButton action="principal.xhtml?faces-redirect=true"
+						value="Cancelar" />
+				</f:facet>
+
+				<p:column headerText="Empresa" sortBy="#{item.tb_Razao}"
+					filterBy="#{item.tb_Razao}" >
+					<h:outputText value="#{item.tb_Razao}" />
+					<f:facet name="header">
+						<h:outputText value="Empresa" />
+					</f:facet>
+				</p:column>
+				<p:column headerText="Apólice" sortBy="#{item.nco_apol}"
+					filterBy="#{item.nco_apol}">
+					<h:outputText value="#{item.nco_apol}" />
+					<f:facet name="header">
+						<h:outputText value="Apólice" />
+					</f:facet>
+				</p:column>
+				<p:column headerText="Produção" sortBy="#{item.nco_amd_cobranca}"
+					filterBy="#{item.nco_amd_cobranca}">
+					<h:outputText value="#{item.nco_amd_cobranca}" />
+					<f:facet name="header">
+						<h:outputText value="Produção" />
+					</f:facet>
+				</p:column>
+				<p:column headerText="Implantação" sortBy="#{item.segmento}"
+					filterBy="#{item.segmento}">
+					<h:outputText value="#{item.segmento}" />
+					<f:facet name="header">
+						<h:outputText value="Implantação" />
+					</f:facet>
+				</p:column>
+
+				<p:column headerText="Parcela" sortBy="#{item.nco_prest}"
+					filterBy="#{item.nco_prest}">
+					<h:outputText value="#{item.nco_prest}" />
+					<f:facet name="header">
+						<h:outputText value="Parcela" />
+					</f:facet>
+				</p:column>
+				<p:column headerText="Lancto Site100%" sortBy="#{item.nco_ramo}"
+					filterBy="#{item.nco_ramo}">
+					<h:outputText value="#{item.nco_ramo}" />
+					<f:facet name="header">
+						<h:outputText value="Lancto Site100%" />
+					</f:facet>
+				</p:column>
+				<p:column headerText="Valor" sortBy="#{item.net_comis}"
+					filterBy="#{item.net_comis}">
+					<h:outputText value="#{item.net_comis}" />
+					<f:facet name="header">
+						<h:outputText value="Valor" />
+					</f:facet>
+				</p:column>
+				<p:column headerText="Comissão Lemara" sortBy="#{item.net_comis}"
+					filterBy="#{item.net_comis}">
+					<h:outputText value="#{item.net_comis}" />
+					<f:facet name="header">
+						<h:outputText value="Comissão Lemara" />
+					</f:facet>
+				</p:column>
+				<p:column headerText="Comissão Angariador" sortBy="#{item.nco_comis}"
+					filterBy="#{item.nco_comis}">
+					<h:outputText value="#{item.nco_comis}" />
+					<f:facet name="header">
+						<h:outputText value="Comissão Angariador" />
+					</f:facet>
+				</p:column>
+
+			</p:dataTable>
+			
+		</h:form>
+		<p:dialog widgetVar="dlgListar" closable="true" draggable="false"
+			modal="true" appendTo="@(body)" resizable="false"
+			header="Comissionamento">
+			<h:form id="frmListar">
+				<h:panelGrid id="pnlListar">
+					<p:panelGrid columns="6" style="width: 100%">
+						<p:dataTable id="tbl_0001"
+							emptyMessage="Nenhum Registro Encontrado."
+							filteredValue="#{MBListaComissao.itensfiltrados}"
+							value="#{MBListaComissao.itenspordata}" var="item"
+							paginator="true" rows="5" style="margin-bottom:20px">
+							<p:column headerText="Empresa" size="10">
+								<h:outputText value="#{item.tb_Razao}" />
+								<f:facet name="header">
+									<h:outputText value="Empresa" />
+								</f:facet>
+							</p:column>
+							<p:column headerText="Apólice">
+								<h:outputText value="#{item.nco_apol}" />
+								<f:facet name="header">
+									<h:outputText value="Apólice" />
+								</f:facet>
+							</p:column>
+							<p:column headerText="Produção">
+								<h:outputText value="#{item.nco_amd_cobranca}" />
+								<f:facet name="header">
+									<h:outputText value="Produção" />
+								</f:facet>
+							</p:column>
+							<p:column headerText="Implantação">
+								<h:outputText value="#{item.segmento}" />
+								<f:facet name="header">
+									<h:outputText value="Implantação" />
+								</f:facet>
+							</p:column>
+
+							<p:column headerText="Parcela">
+								<h:outputText value="#{item.nco_prest}" />
+								<f:facet name="header">
+									<h:outputText value="Parcela" />
+								</f:facet>
+							</p:column>
+							<p:column headerText="Lancto Site100%">
+								<h:outputText value="#{item.nco_ramo}" />
+								<f:facet name="header">
+									<h:outputText value="Lancto Site100%" />
+								</f:facet>
+							</p:column>
+							<p:column headerText="Valor">
+								<h:outputText value="#{item.net_comis}" />
+								<f:facet name="header">
+									<h:outputText value="Valor" />
+								</f:facet>
+							</p:column>
+							<p:column headerText="Comissão Lemara">
+								<h:outputText value="#{item.net_comis}" />
+								<f:facet name="header">
+									<h:outputText value="Comissão Lemara" />
+								</f:facet>
+							</p:column>
+							<p:column headerText="Comissão Angariador">
+								<h:outputText value="#{item.nco_comis}" />
+								<f:facet name="header">
+									<h:outputText value="Comissão Angariador" />
+								</f:facet>
+							</p:column>
+
+						</p:dataTable>
+					</p:panelGrid>
+				</h:panelGrid>
+				<p:panel header="Exportar Comissionamento">
+					<h:commandLink>
+						<p:graphicImage value="/images/Excel.png" />
+						<p:dataExporter type="xls"
+							postProcessor="#{MBListaComissao.postProcessXLS}"
+							target="tbl_0001" fileName="Comissionamento" />
+					</h:commandLink>
+
+				</p:panel>
+
+			</h:form>
+
+		</p:dialog>
+	</ui:define>
+
+</ui:composition>
+
+

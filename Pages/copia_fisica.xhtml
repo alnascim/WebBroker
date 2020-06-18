@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/templates/modeloSistema.xhtml">
+
+	<ui:define name="menu">
+		<ui:include src="/includes/menuPrincipal.xhtml" />
+	</ui:define>
+
+	<ui:define name="conteudo">
+	 	<h:form id="frmUsuListagem" widgetVar="widgetVar_001">
+			<p:dataTable id="tbl_001"
+					emptyMessage="Nenhum Registro Encontrado." 
+					value="#{MBFisica.itens}"
+					filteredValue="#{MBFisica.itensfiltrados}"
+					var="item" 
+					paginator="true" rows="8">
+							
+					<f:facet name="header">
+						Pessoas Fisicas Cadastradas
+					</f:facet>
+
+				<f:facet name="footer">
+				
+					<p:commandButton value="Novo"
+						actionListener="#{MBFisica.prepararNovo}"
+						oncomplete="PF('dlgUsuario').show();"
+						update=":frmUsuNovo:pnlUsuNovo" />
+					<p:commandButton action="principal.xhtml?faces-redirect=true" value="Cancelar"/>
+
+				</f:facet>
+					
+					<p:column headerText="Número CPF" sortBy="#{item.tb_pf_cpf}" filterBy="#{item.tb_pf_cpf}">
+						<h:outputText value ="#{item.tb_pf_cpf}"/>
+					</p:column>
+	
+					<p:column headerText="Nome do Segurado/Beneficiário" sortBy="#{item.tb_pf_nome}" filterBy="#{item.tb_pf_nome}">
+						<h:outputText value ="#{item.tb_pf_nome}"/>
+					</p:column>
+	 
+					<p:column headerText="Número do Documento" sortBy="#{item.tb_pf_nro_docto}" filterBy="#{item.tb_pf_nro_docto}">
+						<h:outputText value ="#{item.tb_pf_nro_docto}"/>
+					</p:column>
+
+					<p:column headerText="Data de Nascimento" sortBy="#{item.tb_pf_datanasc}" filterBy="#{item.tb_pf_datanasc}">
+						<h:outputText value ="#{item.tb_pf_datanasc}" >
+							<f:convertDateTime pattern = "dd-MM-yyyy"  />						
+						</h:outputText> 
+					</p:column>
+					
+					<p:column headerText="Opções">
+						<p:commandButton icon="ui-icon-trash"
+							oncomplete="PF('dlgExcluir').show();"
+							update=":frmExcluir:pnlExcNovo">
+							<f:setPropertyActionListener target="#{MBFisica.fisica}" value="#{item}" />	
+						</p:commandButton>
+						
+						<p:commandButton icon="ui-icon-pencil"
+							oncomplete="PF('dlgEditar').show();"
+							update=":frmAlterar:pnlEditar">
+							<f:setPropertyActionListener target="#{MBFisica.fisica}" value="#{item}" />
+	
+						</p:commandButton>
+					</p:column>					
+						 				 
+			</p:dataTable>
+		</h:form>
+		<p:dialog widgetVar="dlgUsuario" closable="false" draggable="false"
+			modal="true" appendTo="@(body)" resizable="false"
+			header="Novo Cadastro Pessoa Física">
+			<h:form id="frmUsuNovo">
+				<h:panelGrid id="pnlUsuNovo" columns="2">
+
+					<p:outputLabel value="Numero CPF" />
+					<p:inputText value="#{MBFisica.fisica.tb_pf_cpf}" size="15" maxlength="15"/>
+
+					<p:outputLabel value="Nome Segurado/Beneficiário" />
+					<p:inputText value="#{MBFisica.fisica.tb_pf_nome}" size="30" maxlength="45" />
+
+					<p:outputLabel value="Número do Dcoumento" />
+					<p:inputText value="#{MBFisica.fisica.tb_pf_nro_docto}" size="10" maxlength="14" />
+
+ 					<p:outputLabel for="effect" value="Data de Nascimento" />
+        			<p:calendar id="effect" value="#{MBFisica.fisica.pf_datanasc}" effect="fold"  locale="pt_BR" pattern="dd-MM-yyyy"/>
+
+					<p:outputLabel value="Email" />
+					<p:inputText value="#{MBFisica.fisica.tb_pf_email}" size="20" maxlength="30" />
+
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton value="Gravar" actionListener="#{MBFisica.novo}"
+						update=":msgGlobal :frmUsuListagem:tbl_001"
+						oncomplete="PF('dlgUsuario').hide(); frmUsuListagem.clearfilters();"/>
+					<p:commandButton value="Cancelar"
+						onclick="PF('dlgUsuario').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+		<p:dialog widgetVar="dlgExcluir" closable="false" draggable="false"
+			modal="true" appendTo="@(body)" resizable="false"
+			header="Excluir PJ">
+			<h:form id="frmExcluir">
+				<h:panelGrid id="pnlExcNovo" columns="2">
+					<p:outputLabel value="Numero CPF   " />
+					<h:outputText value="#{MBFisica.fisica.tb_pf_cpf}" />
+
+					<p:outputLabel value="Nome Segurado/Beneficiário   " />
+					<h:outputText value="#{MBFisica.fisica.tb_pf_nome}" />
+
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+
+					<p:commandButton value="Excluir"
+						actionListener="#{MBFisica.excluir}"
+						update=":msgGlobal :frmUsuListagem:tbl_001"
+						oncomplete="PF('dlgExcluir').hide(); frmUsuListagem.clearfilters();"/>
+
+					<p:commandButton value="Cancelar"
+						onclick="PF('dlgExcluir').hide();" />
+				</h:panelGrid>
+
+			</h:form>
+
+		</p:dialog>
+
+		
+		<p:dialog widgetVar="dlgEditar" closable="false" draggable="false"
+			modal="true" appendTo="@(body)" resizable="false"
+			header="Editar Usuário">
+			<h:form id="frmAlterar">
+				<h:panelGrid id="pnlEditar" columns="2">
+
+					<p:outputLabel value="NÚmero CPF" />
+					<h:outputText value="#{MBFisica.fisica.tb_pf_cpf}" />
+
+					<p:outputLabel value="Nome Segurado/Beneficiário" />
+					<p:inputText value="#{MBFisica.fisica.tb_pf_nome}" size="50" maxlength="100" />
+
+					<p:outputLabel value="Número do Documento" />
+					<p:inputText value="#{MBFisica.fisica.tb_pf_nro_docto}" size="50" maxlength="200" />
+
+ 					<p:outputLabel for="effect" value="Data de Nascimento" />
+        			<p:calendar id="effect" value="#{MBFisica.fisica.pf_datanasc}" effect="fold"  locale="pt_BR" pattern="dd-MM-yyyy"/>
+
+
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton value="Alterar"
+						actionListener="#{MBFisica.editar}"
+						update=":msgGlobal :frmUsuListagem:tbl_001"
+						oncomplete="PF('dlgEditar').hide(); frmUsuListagem.clearfilters();"/>
+						
+					<p:commandButton value="Cancelar" onclick="PF('dlgEditar').hide();" />
+				</h:panelGrid>
+
+
+			</h:form>
+
+		</p:dialog>
+		
+	</ui:define>
+
+</ui:composition>
+
+

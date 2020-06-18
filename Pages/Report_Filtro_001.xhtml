@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 4.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/templates/modeloSistema.xhtml">
+
+	<ui:define name="menu">
+		<ui:include src="/includes/menuPrincipal.xhtml" />
+	</ui:define>
+
+	<ui:define name="conteudo">
+		<h:form id="frmUsuListagem" widgetVar="widgetVar_001">
+			<p:dataTable id="tbl_001" emptyMessage="Nenhum Registro Encontrado."
+				value="#{MBApolice.itens}"
+				filteredValue="#{MBApolice.itensfiltrados}"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+				var="item" paginator="true" rows="8">
+				<f:facet name="header">
+						Relatório de Produção
+				</f:facet>
+				<f:facet name="footer">
+					<p:commandButton action="principal.xhtml?faces-redirect=true"
+						value="Sair" />
+					<p:commandButton 
+						value="Limpar"	oncomplete="widgetVar_001.clearfilters();"
+						update=":frmUsuListagem:tbl_001"
+						action="Report_Filtro_001.xhtml?faces-redirect=true" />
+				</f:facet>
+
+				<p:column headerText="Mês de Produção"
+					sortBy="#{item.tb_ano_mes_prod}" filterBy="#{item.tb_ano_mes_prod}"
+					style="width:60px;text-align:left;">
+					<f:facet name="header">
+						<h:outputText value="Mês de Produção" />
+					</f:facet>
+					<h:outputText value="#{item.tb_ano_mes_prod}" />
+				</p:column>
+
+				<p:column headerText="Número Apólice"
+					style="width:10px;text-align:center;" filterBy="#{item.id_apolice}">
+					<f:facet name="header">
+						<h:outputText value="Número Apólice" />
+					</f:facet>
+					<h:outputText value="#{item.id_apolice}" />
+				</p:column>
+				<p:column headerText="Agência Produtora"
+					sortBy="#{item.tb_nome_agencia}"
+					 
+					filterBy="#{item.tb_nome_agencia}">
+					<f:facet name="header">
+						<h:outputText value="Agência Produtora" />
+					</f:facet>
+					<h:outputText value="#{item.tb_nome_agencia}" />
+				</p:column>
+				<p:column headerText="Sucursal"
+					sortBy="#{item.tb_sucursal}"
+					 
+					filterBy="#{item.tb_sucursal}">
+					<f:facet name="header">
+						<h:outputText value="Sucursal" />
+					</f:facet>
+					<h:outputText value="#{item.tb_sucursal}" />
+				</p:column>
+				
+				<p:column headerText="Estipulante" filterBy="#{item.estipulante}">
+					<f:facet name="header">
+						<h:outputText value="Estipulante" />
+					</f:facet>
+					<h:outputText value="#{item.estipulante}" />
+				</p:column>
+
+				<p:column headerText="Vidas"
+					style="width:5px;text-align:center;" filterBy="#{item.tb_vidas}">
+					<f:facet name="header">
+						<h:outputText value="Vidas" />
+					</f:facet>
+					<h:outputText value="#{item.tb_vidas}" />
+				</p:column>
+
+				<p:column headerText="Valor do Prêmio"
+					filterBy="#{item.tb_vl_premio}"
+					style="width:120px;text-align:right;">
+					<h:outputText value="#{item.tb_vl_premio}">
+						<f:convertNumber pattern="####,##0.00" />
+					</h:outputText>
+					<f:facet name="header">
+						<h:outputText value="Valor do Prêmio" />
+					</f:facet>
+				</p:column>
+				<p:column headerText="Segmento" sortBy="#{item.segmento}"
+					style="width:10px;text-align:center;" filterBy="#{item.segmento}">
+					<h:outputText value="#{item.segmento}" />
+					<f:facet name="header">
+						<h:outputText value="Segmento" />
+					</f:facet>
+				</p:column>
+
+				<p:column headerText="Produtor" sortBy="#{item.nome_produtor}"
+					style="width:30px;text-align:left;"
+					filterBy="#{item.nome_produtor}">
+					<f:facet name="header">
+						<h:outputText value="Produtor" />
+					</f:facet>
+					<h:outputText value="#{item.nome_produtor}" />
+				</p:column>
+
+			</p:dataTable>
+			<p:panel header="Exportar Relatório">
+				<h:commandLink>
+					<p:graphicImage value="/images/Excel.png" />
+					<p:dataExporter type="xls"
+						postProcessor="#{MBApolice.postProcessXLS}" target="tbl_001"
+						fileName="Relatorio Producao" />
+				</h:commandLink>
+
+			</p:panel>
+
+		</h:form>
+	</ui:define>
+
+</ui:composition>

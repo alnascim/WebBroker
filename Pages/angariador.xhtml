@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/templates/modeloSistema.xhtml">
+
+	<ui:define name="menu">
+		<ui:include src="/includes/menuPrincipal.xhtml" />
+	</ui:define>
+
+	<ui:define name="conteudo">
+	 	<h:form id="frmUsuListagem" widgetVar="widgetVar_001">
+			<p:dataTable id="tbl_001"
+					emptyMessage="Nenhum Registro Encontrado." 
+					value="#{MBAngariador.itens}"
+					filteredValue="#{MBAngariador.itensfiltrados}"
+					var="item" 
+					paginator="true" rows="8">
+							
+					<f:facet name="header">
+						Angariadores Cadastradas.
+					</f:facet>
+
+				<f:facet name="footer">
+				
+					<p:commandButton value="Novo"
+						actionListener="#{MBAngariador.prepararNovo}"
+						oncomplete="PF('dlgUsuario').show();"
+						update=":frmUsuNovo:pnlUsuNovo" />
+					<p:commandButton action="principal.xhtml?faces-redirect=true" value="Cancelar"/>
+
+				</f:facet>
+					<p:column headerText="CODE" sortBy="#{item.idtb_pessoafisica}" filterBy="#{item.idtb_pessoafisica}">
+						<h:outputText value ="#{item.idtb_pessoafisica}"/>
+					</p:column>
+					
+					<p:column headerText="Número CPF" sortBy="#{item.tb_pf_cpf}" filterBy="#{item.tb_pf_cpf}">
+						<h:outputText value ="#{item.tb_pf_cpf}"/>
+					</p:column>
+	
+					<p:column headerText="Nome do Angariador" sortBy="#{item.tb_pf_nome}" filterBy="#{item.tb_pf_nome}">
+						<h:outputText value ="#{item.tb_pf_nome}"/>
+					</p:column>
+	 
+					<p:column headerText="Número do Documento" sortBy="#{item.tb_pf_nro_docto}" filterBy="#{item.tb_pf_nro_docto}">
+						<h:outputText value ="#{item.tb_pf_nro_docto}"/>
+					</p:column>
+
+					<p:column headerText="Data de Nascimento" sortBy="#{item.tb_pf_datanasc}" filterBy="#{item.tb_pf_datanasc}" >
+						<h:outputText value ="#{item.tb_pf_datanasc}" pattern="dd/MM/yyyy">
+					
+													
+						</h:outputText> 
+					</p:column>
+					
+					<p:column headerText="Opções">
+						<p:commandButton icon="ui-icon-trash"
+							title="Excluir Angariador"
+							oncomplete="PF('dlgExcluir').show();"
+							update=":frmExcluir:pnlExcNovo">
+							<f:setPropertyActionListener target="#{MBAngariador.angariador}" value="#{item}" />	
+						</p:commandButton>
+						
+						<p:commandButton icon="ui-icon-pencil"
+							title="Editar dados Angariador"
+							oncomplete="PF('dlgEditar').show();"
+							update=":frmAlterar:pnlEditar">
+							<f:setPropertyActionListener target="#{MBAngariador.angariador}" value="#{item}" />
+	
+						</p:commandButton>
+					</p:column>					
+						 				 
+			</p:dataTable>
+		</h:form>
+		<p:dialog widgetVar="dlgUsuario" closable="false" draggable="false"
+			modal="true" appendTo="@(body)" resizable="false"
+			header="Novo Cadastro Angariador">
+			<h:form id="frmUsuNovo">
+				<h:panelGrid id="pnlUsuNovo" columns="2">
+
+					<p:outputLabel value="Numero CPF" />
+					<p:inputMask id="ncpf" value="#{MBAngariador.angariador.tb_pf_cpf}" mask="999.999.999-99"/>
+
+					<p:outputLabel value="Nome do Angariador" />
+					<p:inputText value="#{MBAngariador.angariador.tb_pf_nome}" size="30" maxlength="45" />
+
+					<p:outputLabel value="Número do Documento" />
+					<p:inputMask id="nrg" value="#{MBAngariador.angariador.tb_pf_nro_docto}" mask="999.999.999-9"/>
+ 
+ 					<p:outputLabel for="datanasc" value="Data de Nascimento" />
+        			<p:calendar id="datanasc" value="#{MBAngariador.angariador.pf_datanasc}" effect="fold"  locale="pt_BR" pattern="dd/MM/yyyy"/>
+
+					<p:outputLabel value="Email" />
+					<p:inputText value="#{MBAngariador.angariador.tb_pf_email}" size="20" maxlength="30" />
+
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton value="Gravar" actionListener="#{MBAngariador.novo}"
+						oncomplete="PF('dlgUsuario').hide(); frmUsuListagem.clearfilters(); frmUsuListagem.refresh();"
+						update=":frmUsuListagem:tbl_001 :msgGlobal" 
+						action="angariador.xhtml?faces-redirect=true"					
+						/>
+					<p:commandButton value="Cancelar"
+						onclick="PF('dlgUsuario').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+		<p:dialog widgetVar="dlgExcluir" closable="false" draggable="false"
+			modal="true" appendTo="@(body)" resizable="false"
+			header="Excluir PJ">
+			<h:form id="frmExcluir">
+				<h:panelGrid id="pnlExcNovo" columns="2">
+
+					<p:outputLabel value="Código Interno" />
+					<h:outputText value="#{MBAngariador.angariador.idtb_pessoafisica}" />
+
+					<p:outputLabel value="Numero CPF" />
+					<h:outputText value="#{MBAngariador.angariador.tb_pf_cpf}" />
+
+					<p:outputLabel value="Nome do Angariador" />
+					<h:outputText value="#{MBAngariador.angariador.tb_pf_nome}" />
+
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+
+					<p:commandButton value="Excluir"
+						actionListener="#{MBAngariador.excluir}"
+						update=":msgGlobal :frmUsuListagem:tbl_001"
+						oncomplete="PF('dlgExcluir').hide(); frmUsuListagem.clearfilters();"
+						action="angariador.xhtml?faces-redirect=true"
+						/>
+
+					<p:commandButton value="Cancelar"
+						onclick="PF('dlgExcluir').hide();" />
+				</h:panelGrid>
+
+			</h:form>
+
+		</p:dialog>
+
+		
+		<p:dialog widgetVar="dlgEditar" closable="false" draggable="false"
+			modal="true" appendTo="@(body)" resizable="false"
+			header="Editar Usuário">
+			<h:form id="frmAlterar">
+				<h:panelGrid id="pnlEditar" columns="2">
+
+					<p:outputLabel value="CODE" />
+					<h:outputText value="#{MBAngariador.angariador.idtb_pessoafisica}" />
+
+					<p:outputLabel value="NÚmero CPF" />
+					<p:inputMask id="ncpf1" value="#{MBAngariador.angariador.tb_pf_cpf}" mask="999.999.999-99"/>
+			
+					<p:outputLabel value="Nome do Angariador" />
+					<p:inputText value="#{MBAngariador.angariador.tb_pf_nome}" size="50" maxlength="100" />
+
+					<p:outputLabel value="Número do Documento" />
+					<p:inputMask id="nrg1" value="#{MBAngariador.angariador.tb_pf_nro_docto}" mask="999.999.999-99"/>
+
+ 					<p:outputLabel for="effect" value="Data de Nascimento" />
+        			<p:calendar id="effect" value="#{MBAngariador.angariador.pf_datanasc}" effect="fold"  locale="pt_BR" pattern="dd/MM/yyyy"/>
+
+
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton value="Alterar"
+						actionListener="#{MBAngariador.editar}"
+						update=":msgGlobal :frmUsuListagem:tbl_001"
+						oncomplete="PF('dlgEditar').hide(); frmUsuListagem.clearfilters();"
+						action="angariador.xhtml?faces-redirect=true"
+						/>
+						
+					<p:commandButton value="Cancelar" onclick="PF('dlgEditar').hide();" />
+				</h:panelGrid>
+
+
+			</h:form>
+
+		</p:dialog>
+		
+	</ui:define>
+
+</ui:composition>
+
+

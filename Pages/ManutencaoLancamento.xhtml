@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 4.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/templates/modeloSistema.xhtml">
+
+	<ui:define name="menu">
+		<ui:include src="/includes/menuPrincipal.xhtml" />
+	</ui:define>
+
+	<ui:define name="conteudo">
+		<h:form id="frmUsuListagem" widgetVar="widgetVar_001">
+			<p:dataTable id="tbl_001" emptyMessage="Nenhum Registro Encontrado."
+				value="#{MBaccount.itens}"
+				filteredValue="#{MBaccount.itensfiltrados}"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+				var="item" paginator="true" rows="8">
+				<f:facet name="header">
+						Lançamentos Contas a Pagar e Receber
+				</f:facet>
+				<f:facet name="footer">
+					<p:commandButton value="Criar Grupo Conta"
+						actionListener="#{MBGrupoConta.prepararNovo}"
+						oncomplete="PF('dlgGrupo').show();" update=":frmGrupo:pnlGrupo " />
+
+					<p:commandButton value="Criar Sub-Grupo Conta"
+						actionListener="#{MBSubSubGrupoConta.prepararNovo}"
+						oncomplete="PF('dlgSubGrupo').show();"
+						update=":frmSubGrupo:pnlSubGrupo " />
+
+					<p:commandButton value="Criar Lançamento"
+						actionListener="#{MBaccount.prepararNovo}"
+						oncomplete="PF('dlgUsuario').show();"
+						update=":frmUsuNovo:pnlUsuNovo " />
+
+					<p:commandButton action="principal.xhtml?faces-redirect=true"
+						value="Cancelar" />
+				</f:facet>
+				<p:column headerText="Codigo da Lançamento" width="30"
+					sortBy="#{item.fee_id}" filterBy="#{item.fee_id}">
+					<h:outputText value="#{item.fee_id}" />
+				</p:column>
+				<p:column headerText="Descritivo do Lançamento" width="250">
+					<h:outputText value="#{item.fee_name}" />
+				</p:column>
+				<p:column headerText="Tipo da Transação" id="automatic_flag"
+					sortBy="#{item.sautomatic_flag}" filterBy="#{item.sautomatic_flag}"
+					width="40">
+					<h:outputText value="#{item.sautomatic_flag}" />
+				</p:column>
+				<p:column headerText="Frequencia" id="frequence"
+					sortBy="#{item.sfrequence}" filterBy="#{item.sfrequence}"
+					width="60">
+					<h:outputText value="#{item.sfrequence}" />
+				</p:column>
+
+				<p:column headerText="Data 1o Pagamento" width="100">
+					<h:outputText value="#{item.ddue_date}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Valor do Lançamento"
+					filterBy="#{item.big_amount}" style="width:120px;text-align:right;">
+					<h:outputText value="#{item.big_amount}">
+						<f:convertNumber pattern="####,##0.00" />
+					</h:outputText>
+					<f:facet name="header">
+						<h:outputText value="Valor do Lançamento" />
+					</f:facet>
+				</p:column>
+				<p:column headerText="Parcelas" width="10">
+					<h:outputText value="#{item.installments}" />
+				</p:column>
+				<p:column headerText="Opções">
+					<p:commandButton icon="ui-icon-trash" title="Excluir Lançamento"
+						oncomplete="PF('dlgExcluir').show();"
+						update=":frmExcluir:pnlExcNovo">
+						<f:setPropertyActionListener target="#{MBaccount.t_grp_account}"
+							value="#{item}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+		<p:dialog widgetVar="dlgUsuario" closable="false" draggable="false"
+			modal="true" appendTo="@(body)" resizable="false"
+			header="Inclusão de Lançamentos">
+			<h:form id="frmUsuNovo">
+				<h:panelGrid id="pnlUsuNovo">
+					<h:panelGrid id="id000" columns="2" style="width: 50%">
+						<p:outputLabel value="Empresa do Grupo" />
+						<p:selectOneMenu
+							value="#{MBaccount.t_grp_account.empresasgrupo.idtb_pessoafisica}"
+							filter="true"  required="true"
+							requiredMessage="Campo Empresa Grupo é obrigatório."
+							immediate="false">
+							<f:selectItem itemValue="" itemLabel="Selecione Empresa do Grupo" />
+							<f:selectItems value="#{MBaccount.comboEmpresaGrupo}"
+								var="item" itemValue="#{item.idtb_pessoafisica}"
+								itemLabel="#{item.tb_pf_nome}" />
+
+						</p:selectOneMenu>
+					</h:panelGrid>
+					<p:panelGrid id="id001" columns="6" style="width: 100%">
+						<p:outputLabel value="Grupo Conta Resultado" />
+						<p:selectOneMenu style="width:400px;"
+							value="#{MBaccount.t_grp_account.grupoconta_combo.id}"
+							required="true" requiredMessage="Campo Grupo é obrigatório."
+							immediate="false">
+							<f:selectItem itemValue="" itemLabel="Selecione Grupo" />
+							<f:selectItems value="#{MBaccount.comboGrupoConta}" var="item"
+								itemValue="#{item.id}" itemLabel="#{item.name}" />
+							<p:ajax event="change" listener="#{MBaccount.getsubgrupo}"
+								update=":frmUsuNovo:id002 " />
+						</p:selectOneMenu>
+					</p:panelGrid>
+					<p:panelGrid id="id002" columns="3" style="width: 100%">
+						<p:outputLabel value="Sub Grupo Conta Resultado" />
+						<p:selectOneMenu style="width:400px;"
+							value="#{MBaccount.t_grp_account.subgrupoconta_combo.id_}"
+							required="true" requiredMessage="Campo Sub-Grupo é obrigatório."
+							immediate="false">
+							<f:selectItem itemValue="" itemLabel="Selecione Sub-Grupo" />
+							<f:selectItems value="#{MBaccount.comboSubGrupoConta}" var="item"
+								itemValue="#{item.id_}" itemLabel="#{item.name_}" />
+							<p:ajax event="change" listener="#{MBaccount.vFeeType}"
+								update=":frmUsuNovo:id004 " />
+						</p:selectOneMenu>
+
+					</p:panelGrid>
+					<p:panelGrid id="id004" columns="6" style="width: 100%">
+						<p:outputLabel for="fee_id" value="Número da Lançamento:" />
+						<p:inputText id="fee_id" value="#{MBaccount.t_grp_account.fee_id}"
+							maxlength="8" disabled="true" />
+						<p:outputLabel for="fee_nome" value="Descritivo da Lançamento:" />
+						<p:inputText id="fee_nome" style="width:300px;"
+							value="#{MBaccount.t_grp_account.fee_name}" disabled="true" />
+					</p:panelGrid>
+					<p:panelGrid id="id003" columns="4" style="width: 100%">
+						<p:outputLabel value="Destinatário" />
+						<p:selectOneMenu style="width:200px;"
+							value="#{MBaccount.t_grp_account.payer_combo.id}" filter="true"
+							required="true" requiredMessage="Destinatário é obrigatório.">
+							<f:selectItem itemValue="0" itemLabel="Destinatário" />
+							<f:selectItems value="#{MBaccount.combopayer}" var="item"
+								itemValue="#{item.id}" itemLabel="#{item.payer_name}" />
+						</p:selectOneMenu>
+						<p:outputLabel value="Manual-Automático" />
+						<p:selectOneMenu style="width:400px;"
+							value="#{MBaccount.t_grp_account.automatic_flag_combo.id}"
+							required="true" requiredMessage="Campo é Automatico obrigatório."
+							immediate="false">
+							<f:selectItem itemValue="" itemLabel="Selecione " />
+							<f:selectItems value="#{MBaccount.comboAutomatic}" var="item"
+								itemValue="#{item.id}" itemLabel="#{item.name}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Frequencia" />
+						<p:selectOneMenu style="width:200px;"
+							value="#{MBaccount.t_grp_account.frequence_combo.id}"
+							filter="true" required="true"
+							requiredMessage="Campo Frequencia é obrigatório.">
+							<f:selectItem itemValue="" itemLabel="Frequencia" />
+							<f:selectItems value="#{MBaccount.comboFrequencia}" var="item"
+								itemValue="#{item.id}" itemLabel="#{item.freq_name}" />
+						</p:selectOneMenu>
+						<p:outputLabel for="duedate" value="Previsão 1o. Pagamento" />
+						<p:calendar id="duedate"
+							value="#{MBaccount.t_grp_account.ddue_date}" effect="fold"
+							locale="pt_BR" pattern="dd/MM/yyyy" />
+
+					</p:panelGrid>
+
+				</h:panelGrid>
+				<p:panelGrid id="id008" columns="6" style="width: 100%">
+
+					<p:outputLabel value="Valor do Lançamento" style="font-weight:bold" />
+					<p:inputText value="#{MBaccount.t_grp_account.amount}">
+						<f:convertNumber pattern="####,##0.00" />
+					</p:inputText>
+					<p:outputLabel for="install" value="Parcelas" />
+					<p:inputText id="install" maxlength="4"
+						value="#{MBaccount.t_grp_account.installments}" />
+				</p:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton value="Gravar" actionListener="#{MBaccount.novo}"
+						oncomplete="PF('dlgUsuario').hide(); widgetVar_001.clearfilters(); "
+						update=":frmUsuListagem:tbl_001 :msgGlobal"
+						action="ManutencaoLancamento.xhtml?faces-redirect=true" />
+					<p:commandButton value="Cancelar"
+						onclick="PF('dlgUsuario').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+		<p:dialog widgetVar="dlgExcluir" closable="false" draggable="false"
+			modal="true" appendTo="@(body)" resizable="false"
+			header="Excluir Lançamento">
+			<h:form id="frmExcluir">
+				<h:panelGrid id="pnlExcNovo" columns="2">
+					<p:outputLabel value="Lançamento" />
+					<h:outputText value="#{MBaccount.t_grp_account.fee_name}" />
+
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+
+					<p:commandButton value="Confirmar"
+						actionListener="#{MBaccount.excluir}"
+						oncomplete="PF('dlgExcluir').hide(); widgetVar_001.clearfilters();"
+						update=":frmUsuListagem:tbl_001 :msgGlobal"
+						action="ManutencaoLancamento.xhtml?faces-redirect=true" />
+
+					<p:commandButton value="Voltar" onclick="PF('dlgExcluir').hide();" />
+				</h:panelGrid>
+
+			</h:form>
+
+		</p:dialog>
+		<p:dialog widgetVar="dlgGrupo" closable="false" draggable="false"
+			modal="true" appendTo="@(body)" resizable="false"
+			header="Novo Grupo de Contas">
+			<h:form id="frmGrupo" widgetVar="widgetVar_grupo">
+				<h:panelGrid id="pnlGrupo" columns="4">
+					<p:outputLabel for="name" value="Grupo" />
+					<p:inputText id="name" value="#{MBGrupoConta.grupoConta.name}"
+						size="45" required="true" maxlength="100"
+						requiredMessage="Campo Grupo Obrigatório" immediate="false" />
+					<p:outputLabel for="console" value="Tipo Conta" />
+
+					<p:selectOneRadio id="console" required="true"
+						requiredMessage="Campo Tipo Conta é obrigatório."
+						immediate="false" value="#{MBGrupoConta.grupoConta.sign}">
+						<f:selectItem itemLabel="Conta de Receita" itemValue="1" />
+						<f:selectItem itemLabel="Conta de Despesa" itemValue="-1" />
+					</p:selectOneRadio>
+
+				</h:panelGrid>
+
+				<h:panelGrid columns="2">
+
+					<p:commandButton value="Salvar"
+						actionListener="#{MBGrupoConta.novo}"
+						update=":frmGrupoList:tbl_001 :msgGlobal"
+						action="ManutencaoLancamento.xhtml?faces-redirect=true" />
+					<p:commandButton value="Voltar" onclick="PF('dlgGrupo').hide();" />
+				</h:panelGrid>
+			</h:form>
+
+			<h:form id="frmGrupoList" widgetVar="widgetVar_grupolist">
+				<p:dataTable id="tbl_001" emptyMessage="Nenhum Registro Encontrado."
+					value="#{MBGrupoConta.itens}"
+					filteredValue="#{MBGrupoConta.itensfiltrados}"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+					var="item" paginator="true" rows="8">
+					<f:facet name="header">
+						Grupo de Conta
+				</f:facet>
+					<p:column headerText="Codigo Interno" width="30">
+						<h:outputText value="#{item.id}" />
+					</p:column>
+					<p:column headerText="Grupo de Conta" width="250">
+						<h:outputText value="#{item.name}" />
+					</p:column>
+					<p:column headerText="Opções" width="30">
+						<p:commandButton icon="ui-icon-trash" title="Excluir Grupo"
+							oncomplete="PF('dlgExcluirG').show();"
+							update=":frmExcluirG:pnlExcNovoG">
+							<f:setPropertyActionListener target="#{MBGrupoConta.grupoConta}"
+								value="#{item}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</h:form>
+		</p:dialog>
+		<p:dialog widgetVar="dlgSubGrupo" closable="false" draggable="false"
+			modal="true" appendTo="@(body)" resizable="false"
+			header="Novo Sub-Grupo de Contas">
+
+			<h:form id="frmSubGrupo" widgetVar="widgetVar_subgrupo">
+				<h:panelGrid id="pnlSubGrupo" columns="2">
+					<p:outputLabel value="Grupo de Conta" />
+					<p:selectOneMenu style="width:400px;"
+						value="#{MBSubSubGrupoConta.subGrupoConta.grupoconta_combo.id}"
+						required="true" requiredMessage="Campo Grupo é obrigatório."
+						immediate="false">
+						<f:selectItem itemValue="" itemLabel="Selecione Grupo" />
+						<f:selectItems value="#{MBSubSubGrupoConta.comboGrupo}" var="item"
+							itemValue="#{item.id}" itemLabel="#{item.name}" />
+					</p:selectOneMenu>
+					<p:outputLabel for="name" value="Sub-Grupo" />
+					<p:inputText id="name"
+						value="#{MBSubSubGrupoConta.subGrupoConta.namesub}" size="45"
+						required="true" maxlength="100"
+						requiredMessage="Campo Obrigatório]" immediate="false" />
+
+					<p:outputLabel value="Segmento-Ramo" />
+					<p:selectOneMenu style="width:400px;"
+						value="#{MBSubSubGrupoConta.subGrupoConta.subsegmento_combo.idsub}"
+						required="true" requiredMessage="Campo Segmento-Ramo Obirgatorio"
+						immediate="false">
+						<f:selectItem itemValue="0" itemLabel="Selecione Segmento-Ramo" />
+						<f:selectItems value="#{MBSubSubGrupoConta.comboSubsegmento}"
+							var="item" itemValue="#{item.idsub}"
+							itemLabel="#{item.tb_subsegmento}" />
+					</p:selectOneMenu>
+
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+
+					<p:commandButton value="Salvar"
+						actionListener="#{MBSubSubGrupoConta.novo}"
+						update=":frmSubGrupoList:tbl_001 :msgGlobal" />
+					<p:commandButton value="Voltar" onclick="PF('dlgSubGrupo').hide();" />
+				</h:panelGrid>
+			</h:form>
+			<h:form id="frmSubGrupoList" widgetVar="widgetVar_subgrupolist">
+				<p:dataTable id="tbl_001" emptyMessage="Nenhum Registro Encontrado."
+					value="#{MBSubSubGrupoConta.itens}"
+					filteredValue="#{MBSubSubGrupoConta.itensfiltrados}"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+					var="item" paginator="true" rows="8">
+					<f:facet name="header">
+						Sub-Grupo de Conta
+				    </f:facet>
+					<p:column headerText="Codigo Interno" width="30">
+						<h:outputText value="#{item.id_sq}" />
+					</p:column>
+					<p:column headerText="Grupo de Conta" width="250">
+						<h:outputText value="#{item.name}" />
+					</p:column>
+					<p:column headerText="Sub-Grupo de Conta" width="250">
+						<h:outputText value="#{item.namesub}" />
+					</p:column>
+					<p:column headerText="Segmento-Ramo" width="250">
+						<h:outputText value="#{item.subsegmento}" />
+					</p:column>
+					<p:column headerText="Opções" width="30">
+						<p:commandButton icon="ui-icon-trash" title="Excluir Sub-Grupo"
+							oncomplete="PF('dlgExcluirSG').show();"
+							update=":frmExcluirSG:pnlExcNovoSG">
+							<f:setPropertyActionListener
+								target="#{MBSubSubGrupoConta.subGrupoConta}" value="#{item}" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+			</h:form>
+
+		</p:dialog>
+		<p:dialog widgetVar="dlgExcluirG" closable="false" draggable="false"
+			modal="true" appendTo="@(body)" resizable="false"
+			header="Excluir Grupo">
+			<h:form id="frmExcluirG">
+				<h:panelGrid id="pnlExcNovoG" columns="2">
+					<p:outputLabel value="Grupo" />
+					<h:outputText value="#{MBGrupoConta.grupoConta.name}" />
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton value="Confirmar Exclusão ?"
+						actionListener="#{MBGrupoConta.excluir}"
+						oncomplete="PF('dlgExcluirG').hide();"
+						update=":frmGrupoList:tbl_001 :msgGlobal" />
+					<p:commandButton value="Voltar" onclick="PF('dlgExcluirG').hide();" />
+				</h:panelGrid>
+
+			</h:form>
+
+		</p:dialog>
+		<p:dialog widgetVar="dlgExcluirSG" closable="false" draggable="false"
+			modal="true" appendTo="@(body)" resizable="false"
+			header="Excluir Sub-Grupo">
+			<h:form id="frmExcluirSG">
+				<h:panelGrid id="pnlExcNovoSG" columns="2">
+					<p:outputLabel value="Sub-Grupo" />
+					<h:outputText value="#{MBSubSubGrupoConta.subGrupoConta.namesub}" />
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton value="Confirmar Exclusão ?"
+						actionListener="#{MBSubSubGrupoConta.excluir}"
+						oncomplete="PF('dlgExcluirSG').hide();"
+						update=":frmSubGrupoList:tbl_001 :msgGlobal" />
+					<p:commandButton value="Voltar"
+						onclick="PF('dlgExcluirSG').hide();" />
+				</h:panelGrid>
+
+			</h:form>
+
+		</p:dialog>
+
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/templates/modeloSistema.xhtml">
+
+	<ui:define name="menu">
+		<ui:include src="/includes/menuPrincipal.xhtml" />
+	</ui:define>
+
+	<ui:define name="conteudo">
+		<h:form id="form">
+			<p:panel header="Cadastro Pagadores">
+				<p:commandButton id="btnNovo" value="Novo Pagador"
+					actionListener="#{MBPayers.prepararNovo}"
+					update=":frmUsuNovo:pnlDados " />
+			</p:panel>
+		</h:form>
+		<h:form id="frmUsuNovo" widgetVar="widgetVar_001">
+			<p:panel>
+				<h:panelGrid id="pnlDados" columns="2">
+					<h:outputLabel value="Nome do Pagador:" />
+					<p:inputText label="nome"
+						value="#{MBPayers.ppagadores.account_name}" maxlength="100"
+						size="50" />
+					<p:outputLabel value="Banco" />
+					<p:selectOneMenu value="#{MBPayers.ppagadores.banco_combo.id}"
+						filter="true" style="width:100%" required="true"
+						requiredMessage="Banco é obrigatório." immediate="false">
+						<f:selectItem itemValue="" itemLabel="Selecione Banco" />
+						<f:selectItems value="#{MBPayers.comboBanco}" var="item"
+							itemValue="#{item.id}" itemLabel="#{item.banco}" />
+					</p:selectOneMenu>
+
+					<h:outputLabel value="Agência" />
+					<p:inputText label="ag" value="#{MBPayers.ppagadores.t_agenc}"
+						maxlength="15" size="10" />
+					<h:outputLabel value="Conta" />
+					<p:inputText label="Conta"
+						value="#{MBPayers.ppagadores.t_account_number}" maxlength="14"
+						size="30" />
+					<h:outputLabel value="Díg" />
+					<p:inputText label="dg"
+						value="#{MBPayers.ppagadores.t_account_digit}" maxlength="2"
+						size="2" />
+					<p:commandButton value="Gravar" actionListener="#{MBPayers.salvar}"
+						oncomplete="widgetVar_001.clearfilters();"
+						update=":formLista:tabela :msgGlobal"
+						action="Pagadores.xhtml?faces-redirect=true" />
+
+				</h:panelGrid>
+			</p:panel>
+		</h:form>
+		<h:form id="formLista" widgetVar="widgetVar_002">
+			<p:panel>
+				<p:dataTable id="tabela" emptyMessage="Nenhum Registro Encontrado."
+					value="#{MBPayers.itens}"
+					filteredValue="#{MBPayers.itensfiltrados}"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+					var="item" paginator="true" rows="8">
+					<f:facet name="header">Lista de Pagadores</f:facet>
+					<f:facet name="footer">
+						<p:commandButton action="principal.xhtml?faces-redirect=true"
+							value="Voltar" />
+					</f:facet>
+					<p:column headerText="Nome " style="text-align: left">
+						<h:outputText value="#{item.account_name}" />
+					</p:column>
+					<p:column headerText="Banco " style="text-align: left">
+						<h:outputText value="#{item.bank}" />
+					</p:column>
+					<p:column headerText="Agência" style="text-align: center">
+						<h:outputText value="#{item.t_agenc}" />
+					</p:column>
+					<p:column headerText="Conta-Dígito" style="text-align: right">
+						<h:outputText value="#{item.t_account_number} " />
+					</p:column>
+					<p:column headerText="Opções">
+						<p:commandButton icon="ui-icon-trash" title="Excluir"
+							oncomplete="PF('dlgExcluir').show();"
+							update=":frmExcluir:pnlExcNovo">
+							<f:setPropertyActionListener target="#{MBPayers.ppagadores}"
+								value="#{item}" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+			</p:panel>
+
+		</h:form>
+		<p:dialog widgetVar="dlgExcluir" closable="false" draggable="false"
+			modal="true" appendTo="@(body)" resizable="false"
+			header="Excluir Item">
+
+			<h:form id="frmExcluir">
+				<h:panelGrid id="pnlExcNovo" columns="2">
+					<h:outputText value="ID Interno" />
+					<h:outputText value="#{MBPayers.ppagadores.id}" />
+
+					<h:outputText value="Destinatario]" />
+					<h:outputText value="#{MBPayers.ppagadores.account_name}" />
+
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton value="Excluir" actionListener="#{MBPayers.excluir}"
+						oncomplete="PF('dlgExcluir').hide(); tabela.clearfilters();"
+						update=":formLista:tabela :msgGlobal"
+						action="Pagadores.xhtml?faces-redirect=true" />
+					<p:commandButton value="Cancelar"
+						onclick="PF('dlgExcluir').hide();" />
+				</h:panelGrid>
+
+			</h:form>
+
+
+		</p:dialog>
+	</ui:define>
+</ui:composition>
+
+

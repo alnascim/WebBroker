@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/templates/modeloSistema.xhtml">
+
+	<ui:define name="menu">
+		<ui:include src="/includes/menuPrincipal.xhtml" />
+	</ui:define>
+
+	<ui:define name="conteudo">
+		<h:form id="frmUsuListagem" widgetVar="widgetVar_001">
+			<p:dataTable id="tbl_001" emptyMessage="Nenhum Registro Encontrado."
+				value="#{MBJuridicas.itens}"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+				filteredValue="#{MBJuridicas.itensfiltrados}" var="item"
+				paginator="true" rows="8">
+				<f:facet name="header">
+						Outras Congêneres
+					</f:facet>
+				<f:facet name="footer">
+				
+					<p:commandButton value="Novo"
+						actionListener="#{MBJuridicas.prepararNovo}"
+						oncomplete="PF('dlgUsuario').show();"
+						update=":frmUsuNovo:pnlUsuNovo :msgGlobal" />
+					<p:commandButton action="principal.xhtml?faces-redirect=true"
+						value="Cancelar" />
+				</f:facet>
+				<p:column headerText="Número CNPJ" sortBy="#{item.tb_Cnpj}"
+					filterBy="#{item.tb_Cnpj}">
+					<h:outputText value="#{item.tb_Cnpj}" />
+				</p:column>
+				<p:column headerText="Razão Social" id="nomerazao"
+					sortBy="#{item.tb_Razao}" filterBy="#{item.tb_Razao}">
+					<p:commandLink actionListener="#{MBJuridicas.prepararEditar}"
+						oncomplete="PF('dlgEditar').show();"
+						update=":frmAlterar:pnlEditar">
+						<f:setPropertyActionListener target="#{MBJuridicas.juridicas}"
+							value="#{item}" />
+						<h:outputText value="#{item.tb_Razao}" />
+					</p:commandLink>
+				</p:column>
+
+				<p:column headerText="Angariador" sortBy="#{item.tb_pf_nome}"
+					filterBy="#{item.tb_pf_nome}">
+					<h:outputText value="#{item.tb_pf_nome}" />
+				</p:column>
+
+				<p:column headerText="Data Inicio Atividade"
+					sortBy="#{item.ini_ativ}" filterBy="#{item.ini_ativ}">
+					<h:outputText value="#{item.ini_ativ}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Opções">
+					<p:commandButton icon="ui-icon-trash" title="Excluir PJ "
+						oncomplete="PF('dlgExcluir').show();"
+						update=":frmExcluir:pnlExcNovo">
+						<f:setPropertyActionListener target="#{MBJuridicas.juridicas}"
+							value="#{item}" />
+					</p:commandButton>
+
+
+				</p:column>
+
+			</p:dataTable>
+		</h:form>
+		<p:dialog widgetVar="dlgUsuario" closable="false" draggable="false"
+			modal="true" appendTo="@(body)" resizable="false"
+			header="01 - Dados da Congênere">
+			<h:form id="frmUsuNovo">
+				<h:panelGrid id="pnlUsuNovo">
+					<p:panelGrid columns="6" style="width: 150% border: none">
+						<p:outputLabel value="Numero CNPJ" />
+						<p:inputMask id="icnpj" value="#{MBJuridicas.juridicas.tb_Cnpj}"
+							mask="99.999.999/9999-99" />
+						<p:outputLabel value="Razão Social Congênere" />
+						<p:inputText value="#{MBJuridicas.juridicas.tb_Razao}" size="50"
+							maxlength="100" />
+						<p:outputLabel value="Empresa do Grupo" />
+						<p:selectOneMenu
+							value="#{MBJuridicas.juridicas.empresasgrupo.idtb_pessoafisica}"
+							filter="true" style="width:100%" required="true"
+							requiredMessage="Campo Empresa Grupo é obrigatório."
+							immediate="false">
+							<f:selectItem itemValue="" itemLabel="Selecione Empresa do Grupo" />
+							<f:selectItems value="#{MBJuridicas.comboEmpresaGrupo}"
+								var="item" itemValue="#{item.idtb_pessoafisica}"
+								itemLabel="#{item.tb_pf_nome}" />
+
+						</p:selectOneMenu>
+					</p:panelGrid>
+					<p:panelGrid columns="6" style="width: 100%">
+						<p:outputLabel value="Contato" />
+						<p:inputText value="#{MBJuridicas.juridicas.tb_Contato}" size="50"
+							maxlength="200" />
+						<p:outputLabel value="Cargo do Contato" />
+						<p:inputText value="#{MBJuridicas.juridicas.tb_tipocontato}"
+							size="30" maxlength="45" />
+						<p:outputLabel value="Email" />
+						<p:inputText value="#{MBJuridicas.juridicas.tb_email}" size="20"
+							maxlength="45" />
+					</p:panelGrid>
+					<p:panelGrid columns="8" style="width: 100%">
+						<p:outputLabel value="Fone Contato-Fixo" />
+						<p:inputText value="#{MBJuridicas.juridicas.tb_pj_ddd01}" size="3"
+							maxlength="3" />
+						<p:inputMask value="#{MBJuridicas.juridicas.tb_pj_fone01}"
+							size="9" mask="9999-9999" maxlength="9" />
+
+						<p:outputLabel value="Fone Contato-Celular" />
+						<p:inputText value="#{MBJuridicas.juridicas.tb_pj_ddd02}" size="3"
+							maxlength="3" />
+						<p:inputMask value="#{MBJuridicas.juridicas.tb_pj_fone02}"
+							size="10" mask="99999-9999" maxlength="10" />
+
+						<p:outputLabel for="effect" value="Data Inicio Atividade" />
+						<p:calendar id="effect" value="#{MBJuridicas.juridicas.ini_ativ}"
+							effect="fold" locale="pt_BR" pattern="dd/MM/yyyy" />
+					</p:panelGrid>
+
+					<p:panelGrid columns="8" style="width: 100%">
+						<p:outputLabel value="CEP" style="font-weight:bold" />
+						<p:inputMask id="cep1"
+							value="#{MBJuridicas.juridicas.STREET_ZIPCODE}" mask="99999999"
+							size="8" />
+
+						<p:commandButton value="Busca CEP"
+							actionListener="#{MBJuridicas.localizar}"
+							oncomplete="PF('dlgUsuario').show();"
+							update=":frmUsuNovo:pnlUsuNovo :msgGlobal" />
+
+						<p:outputLabel value="CEP-Correspondência"
+							style="font-weight:bold" />
+						<p:inputMask id="cep3"
+							value="#{MBJuridicas.juridicas.tb_cepcorresp}" mask="99999999"
+							size="8" />
+					</p:panelGrid>
+					<p:panelGrid columns="4" style="width: 100%">
+						<p:outputLabel value="Tipo Logradouro" style="font-weight:bold" />
+						<p:outputLabel value="#{MBJuridicas.juridicas.STREET_TYPE}" />
+
+						<p:outputLabel value="Logradouro" style="font-weight:bold" />
+						<p:outputLabel value="#{MBJuridicas.juridicas.STREET_NAME}" />
+
+						<p:outputLabel value="Número" style="font-weight:bold" />
+						<p:inputText value="#{MBJuridicas.juridicas.tb_cep_num}"
+							maxlength="5" />
+
+						<p:outputLabel value="Complemento" style="font-weight:bold" />
+						<p:inputText value="#{MBJuridicas.juridicas.STREET_COMP}"
+							maxlength="50" />
+
+						<p:outputLabel value="Bairro" style="font-weight:bold" />
+						<p:outputLabel value="#{MBJuridicas.juridicas.DISTRICT}" />
+
+						<p:outputLabel value="Cidade" style="font-weight:bold" />
+						<p:outputLabel value="#{MBJuridicas.juridicas.CITY}" />
+
+						<p:outputLabel value="Estado" style="font-weight:bold" />
+						<p:outputLabel value="#{MBJuridicas.juridicas.STATE}" />
+
+					</p:panelGrid>
+
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+
+					<p:commandButton value="Gravar"
+						actionListener="#{MBJuridicas.novo}"
+						oncomplete="PF('dlgUsuario').hide(); widgetVar_001.clearfilters();"
+						update=":frmUsuListagem:tbl_001 :msgGlobal"
+						action="seguradora.xhtml?faces-redirect=true" />
+
+					<p:commandButton value="Cancelar"
+						onclick="PF('dlgUsuario').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+		<p:dialog widgetVar="dlgEditar" closable="false" draggable="false"
+			modal="true" appendTo="@(body)" resizable="false"
+			header="Editar Dados Congênere">
+			<h:form id="frmAlterar">
+				<h:panelGrid id="pnlEditar">
+
+					<p:panelGrid columns="5" style="width: 100%">
+						<p:outputLabel value="#{MBJuridicas.juridicas.tb_IDPJ}" />
+						<p:outputLabel value="Número do CNPJ" />
+						<p:inputMask id="icnpj" value="#{MBJuridicas.juridicas.tb_Cnpj}"
+							mask="99.999.999/9999-99" />
+
+						<p:outputLabel value="Razão Social" />
+						<p:inputText value="#{MBJuridicas.juridicas.tb_Razao}" size="50"
+							maxlength="100" />
+					</p:panelGrid>
+					<p:panelGrid columns="6" style="width: 100%">
+						<p:outputLabel value="Contato" />
+						<p:inputText value="#{MBJuridicas.juridicas.tb_Contato}" size="50"
+							maxlength="200" />
+						<p:outputLabel value="Cargo do Contato" />
+						<p:inputText value="#{MBJuridicas.juridicas.tb_tipocontato}"
+							size="30" maxlength="45" />
+						<p:outputLabel value="Email" />
+						<p:inputText value="#{MBJuridicas.juridicas.tb_email}" size="20"
+							maxlength="45" />
+					</p:panelGrid>
+					<p:panelGrid columns="8" style="width: 100%">
+						<p:outputLabel value="Fone Contato-Fixo" />
+						<p:inputText value="#{MBJuridicas.juridicas.tb_pj_ddd01}" size="3"
+							maxlength="3" />
+						<p:inputMask value="#{MBJuridicas.juridicas.tb_pj_fone01}"
+							size="9" mask="9999-9999" maxlength="9" />
+
+						<p:outputLabel value="Fone Contato-Celular" />
+						<p:inputText value="#{MBJuridicas.juridicas.tb_pj_ddd02}" size="3"
+							maxlength="3" />
+						<p:inputMask value="#{MBJuridicas.juridicas.tb_pj_fone02}"
+							size="10" mask="99999-9999" maxlength="10" />
+
+						<p:outputLabel for="effect" value="Data Inicio Atividade" />
+						<p:calendar id="effect" value="#{MBJuridicas.juridicas.ini_ativ}"
+							effect="fold" locale="pt_BR" pattern="dd/MM/yyyy" />
+					</p:panelGrid>
+
+				
+					<p:panelGrid columns="6" style="width: 100%">
+						<p:outputLabel value="Qtde Sócios" />
+						<p:inputText value="#{MBJuridicas.juridicas.tb_Qtd_Socio}"
+							size="5" maxlength="10" />
+
+					</p:panelGrid>
+
+					<p:panelGrid columns="8" style="width: 100%">
+						<p:outputLabel value="CEP" style="font-weight:bold" />
+						<p:inputMask id="cep2"
+							value="#{MBJuridicas.juridicas.STREET_ZIPCODE}" mask="99999999"
+							size="8" />
+
+						<p:commandButton value="Busca CEP"
+							actionListener="#{MBJuridicas.localizar}"
+							oncomplete="PF('dlgEditar').show();"
+							update=":frmAlterar:pnlEditar :msgGlobal" />
+
+						<p:outputLabel value="CEP-Correspondência"
+							style="font-weight:bold" />
+						<p:inputMask id="cep3"
+							value="#{MBJuridicas.juridicas.tb_cepcorresp}" mask="99999999"
+							size="8" />
+
+					</p:panelGrid>
+
+					<p:panelGrid columns="4" style="width: 100%">
+
+						<p:outputLabel value="Tipo Logradouro" style="font-weight:bold" />
+						<p:outputLabel value="#{MBJuridicas.juridicas.STREET_TYPE}" />
+
+						<p:outputLabel value="Logradouro" style="font-weight:bold" />
+						<p:outputLabel value="#{MBJuridicas.juridicas.STREET_NAME}" />
+
+						<p:outputLabel value="Número" style="font-weight:bold" />
+						<p:inputText value="#{MBJuridicas.juridicas.tb_cep_num}"
+							maxlength="5" />
+
+						<p:outputLabel value="Complemento" style="font-weight:bold" />
+						<p:inputText value="#{MBJuridicas.juridicas.STREET_COMP}"
+							maxlength="50" />
+
+						<p:outputLabel value="Bairro" style="font-weight:bold" />
+						<p:outputLabel value="#{MBJuridicas.juridicas.DISTRICT}" />
+
+						<p:outputLabel value="Cidade" style="font-weight:bold" />
+						<p:outputLabel value="#{MBJuridicas.juridicas.CITY}" />
+
+						<p:outputLabel value="Estado" style="font-weight:bold" />
+						<p:outputLabel value="#{MBJuridicas.juridicas.STATE}" />
+						<p:outputLabel value="Senha de Acesso" />
+						<p:inputText value="#{MBJuridicas.juridicas.tb_senha_acesso}"
+							size="11" maxlength="20" />
+
+					</p:panelGrid>
+
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton value="Alterar"
+						actionListener="#{MBJuridicas.editar}"
+						oncomplete="PF('dlgEditar').hide(); frmUsuListagem.clearfilters();"
+						update=":frmUsuListagem:tbl_001 :msgGlobal"
+						action="seguradora.xhtml?faces-redirect=true" />
+
+					<p:commandButton value="Cancelar" onclick="PF('dlgEditar').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+		<p:dialog widgetVar="dlgExcluir" closable="false" draggable="false"
+			modal="true" appendTo="@(body)" resizable="false"
+			header="Excluir Congênere">
+			<h:form id="frmExcluir">
+				<h:panelGrid id="pnlExcNovo" columns="2">
+					<p:outputLabel value="Numero CNPJ   " />
+					<h:outputText value="#{MBJuridicas.juridicas.tb_Cnpj}" />
+
+					<p:outputLabel value="Razão Social   " />
+					<h:outputText value="#{MBJuridicas.juridicas.tb_Razao}" />
+
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+
+					<p:commandButton value="Excluir"
+						actionListener="#{MBJuridicas.excluir}"
+						oncomplete="PF('dlgExcluir').hide(); frmUsuListagem.clearfilters();"
+						update=":frmUsuListagem:tbl_001 :msgGlobal"
+						action="seguradora.xhtml?faces-redirect=true" />
+
+					<p:commandButton value="Cancelar"
+						onclick="PF('dlgExcluir').hide();" />
+				</h:panelGrid>
+
+			</h:form>
+
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>
+
+

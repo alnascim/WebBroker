@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/templates/modeloSistema.xhtml">
+
+	<ui:define name="menu">
+		<ui:include src="/includes/menuPrincipal.xhtml" />
+	</ui:define>
+
+	<ui:define name="conteudo">
+		<h:form id="frmUsuListagem" widgetVar="tabelaUsuario">
+			<p:dataTable id="tblUsuario"
+				emptyMessage="Nenhum Registro Encontrado"
+				value="#{MBListaFatura.itens}"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+				filteredValue="#{MBListaFatura.itensfiltrados}" var="item"
+				paginator="true" rows="8">
+
+
+				<f:facet name="footer">
+					<p:commandButton action="principal.xhtml?faces-redirect=true"
+						value="Cancelar" />
+				</f:facet>
+
+				<p:column headerText="Data Base" sortBy="#{item.nco_amd_cobranca}"
+					filterBy="#{item.nco_amd_cobranca}" locale="pt_BR"
+					pattern="MM/yyyy">
+					<f:facet name="header">
+						<h:outputText value="Data Base" />
+					</f:facet>
+					<h:outputText value="#{item.nco_amd_cobranca}" />
+				</p:column>
+
+				<p:column headerText="Segmento" sortBy="#{item.segmento}"
+					filterBy="#{item.segmento}">
+					<h:outputText value="#{item.segmento}" />
+					<f:facet name="header">
+						<h:outputText value="Segmento" />
+					</f:facet>
+				</p:column>
+
+				<p:column headerText="Sucursal" sortBy="#{item.tb_Suc}"
+					filterBy="#{item.tb_Suc}">
+					<h:outputText value="#{item.tb_Suc}" />
+					<f:facet name="header">
+						<h:outputText value="Sucursal" />
+					</f:facet>
+				</p:column>
+
+				<p:column headerText="Nro. Proposta"
+					sortBy="#{item.nco_nr_proposta}" filterBy="#{item.nco_nr_proposta}">
+					<h:outputText value="#{item.nco_nr_proposta}" />
+					<f:facet name="header">
+						<h:outputText value="Nro. Proposta" />
+					</f:facet>
+				</p:column>
+
+				<p:column headerText="Segurado" sortBy="#{item.nco_nm_segurado}"
+					filterBy="#{item.nco_nm_segurado}">
+					<h:outputText value="#{item.nco_nm_segurado}" />
+					<f:facet name="header">
+						<h:outputText value="Segurado" />
+					</f:facet>
+				</p:column>
+
+				<p:column headerText="Ramo" sortBy="#{item.tb_pf_nome}"
+					filterBy="#{item.tb_pf_nome}">
+					<h:outputText value="#{item.tb_pf_nome}" />
+					<f:facet name="header">
+						<h:outputText value="Angariador" />
+					</f:facet>
+				</p:column>
+				<p:column headerText="Ramo" sortBy="#{item.nco_ramo}"
+					filterBy="#{item.nco_ramo}">
+					<h:outputText value="#{item.nco_ramo}" />
+					<f:facet name="header">
+						<h:outputText value="Ramo" />
+					</f:facet>
+				</p:column>
+
+				<p:column headerText="Apólice" sortBy="#{item.nco_apol}"
+					filterBy="#{item.nco_apol}">
+					<h:outputText value="#{item.nco_apol}" />
+					<f:facet name="header">
+						<h:outputText value="Apólice" />
+					</f:facet>
+				</p:column>
+				<p:column headerText="Nro. Parcela" sortBy="#{item.nco_prest}"
+					filterBy="#{item.nco_prest}">
+					<h:outputText value="#{item.nco_prest}" />
+					<f:facet name="header">
+						<h:outputText value="Nro. Parcela" />
+					</f:facet>
+				</p:column>
+				<p:column headerText="% Comiss">
+					<h:outputText value="#{item.nco_perc}">
+						<f:convertNumber pattern="####,##0.00" />
+					</h:outputText>
+					<f:facet name="header">
+						<h:outputText value="% Comiss" />
+					</f:facet>
+				</p:column>
+				<p:column headerText="Valor do Prêmio">
+					<h:outputText value="#{item.vl_premio}">
+						<f:convertNumber currencyCode="BRL" type="currency" />
+					</h:outputText>
+					<f:facet name="header">
+						<h:outputText value="Valor do Prêmio" />
+					</f:facet>
+				</p:column>
+				<p:column headerText="Comissão">
+					<h:outputText value="#{item.nco_comis_b}">
+						<f:convertNumber currencyCode="BRL" type="currency" />
+					</h:outputText>
+					<f:facet name="header">
+						<h:outputText value="Comissão" />
+					</f:facet>
+				</p:column>
+
+
+			</p:dataTable>
+
+			<p:panel header="Exportar Faturamento">
+				<h:commandLink>
+					<p:graphicImage value="/images/Excel.png" />
+					<p:dataExporter type="xls"
+						postProcessor="#{MBListaFatura.postProcessXLS}"
+						target="tblUsuario" fileName="Fatura" />
+				</h:commandLink>
+
+			</p:panel>
+
+		</h:form>
+		<p:dialog widgetVar="dlgListar" closable="false" draggable="false"
+			modal="true" appendTo="@(body)" resizable="false"
+			header="Faturamento">
+			<h:form id="frmListar">
+				<h:panelGrid id="pnlListar">
+					<p:panelGrid columns="6" style="width: 100%">
+
+						<p:dataTable id="tbl_0001"
+							emptyMessage="Nenhum Registro Encontrado."
+							value="#{MBListaFatura.itensfatura}" var="item" paginator="true"
+							rows="5">
+
+							<f:facet name="header">
+								<h:outputText value="#{MBFatSelec.fatSelec.pf_dtinifat}" />
+							</f:facet>
+
+							<p:column headerText="Data Base">
+								<f:facet name="header">
+									<h:outputText value="Data Base" />
+								</f:facet>
+								<h:outputText value="#{item.nco_amd_cobranca}"
+									pattern="dd-MM-yyyy" />
+							</p:column>
+
+						</p:dataTable>
+
+					</p:panelGrid>
+
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+
+					<p:commandButton value="Cancelar"
+						oncomplete="PF('dlgListar').hide();" />
+
+				</h:panelGrid>
+
+			</h:form>
+
+		</p:dialog>
+
+
+	</ui:define>
+
+</ui:composition>
+
+

@@ -1,0 +1,753 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 4.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/templates/modeloSistema.xhtml">
+
+	<ui:define name="menu">
+		<ui:include src="/includes/menuPrincipal.xhtml" />
+	</ui:define>
+
+	<ui:define name="conteudo">
+		<h:form id="frmUsuListagem" widgetVar="widgetVar_001">
+			<p:dataTable id="tbl_001" emptyMessage="Nenhum Registro Encontrado."
+				value="#{MBFisica.itens}" filteredValue="#{MBFisica.itensfiltrados}"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+				var="item" paginator="true" rows="8">
+				<f:facet name="header">
+						Beneficiário-Titular Cadastrado
+				</f:facet>
+				<f:facet name="footer">
+					<p:commandButton value="Novo"
+						actionListener="#{MBFisica.prepararNovo}"
+						oncomplete="PF('dlgUsuario').show();"
+						update=":frmUsuNovo:pnlUsuNovo " />
+					<p:commandButton action="principal.xhtml?faces-redirect=true"
+						value="Sair" />
+				</f:facet>
+				<p:column headerText="Id" sortBy="#{item.idtb_pessoafisica}"
+					filterBy="#{item.idtb_pessoafisica}">
+					<h:outputText value="#{item.idtb_pessoafisica}" />
+				</p:column>
+
+				<p:column headerText="Número CPF" sortBy="#{item.tb_pf_cpf}"
+					style="text-align: center;" filterBy="#{item.tb_pf_cpf}">
+					<h:outputText value="#{item.tb_pf_cpf}" />
+				</p:column>
+				<p:column headerText="Nome do Segurado/Beneficiário" id="nomeseg"
+					sortBy="#{item.tb_pf_nome}" filterBy="#{item.tb_pf_nome}">
+
+					<p:commandLink actionListener="#{MBFisica.prepararEditar}"
+						oncomplete="PF('dlgEditar').show();"
+						update=":frmAlterar:pnlEditar">
+						<f:setPropertyActionListener target="#{MBFisica.fisica}"
+							value="#{item}" />
+						<h:outputText value="#{item.tb_pf_nome}" />
+					</p:commandLink>
+
+				</p:column>
+
+				<p:column headerText="Data de Nascimento"
+					style="text-align: center;" sortBy="#{item.pf_datanasc}"
+					filterBy="#{item.pf_datanasc}">
+					<h:outputText value="#{item.pf_datanasc}">
+						<f:convertDateTime pattern="dd-MM-yyyy" />
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Opções" style="text-align: center;">
+					<p:commandButton icon="ui-icon-trash" title="Excluir Titular"
+						oncomplete="PF('dlgExcluir').show();"
+						update=":frmExcluir:pnlExcNovo">
+						<f:setPropertyActionListener target="#{MBFisica.fisica}"
+							value="#{item}" />
+					</p:commandButton>
+
+					<p:commandButton icon="ui-icon-person" title="Adicionar Dependente"
+						actionListener="#{MBDepend.prepararNovo}"
+						oncomplete="PF('dlgDepend').show();" update=":frmDepend:pnlDepend">
+						<f:setPropertyActionListener target="#{MBFisica.fisica}"
+							value="#{item}" />
+					</p:commandButton>
+
+					<p:commandButton icon="ui-icon-note" title="Listar Dependentes"
+						action="#{MBFisica.prepararListar}"
+						oncomplete="PF('dlgListar').show();" update=":frmListar:pnlListar">
+						<f:setPropertyActionListener target="#{MBFisica.fisica}"
+							value="#{item}" />
+					</p:commandButton>
+
+					<p:commandButton icon="ui-icon-circle-plus"
+						title="Adicionar Benefícios"
+						actionListener="#{MBFisica.prepararNovoBen}"
+						oncomplete="PF('dlgOpenRelac').show();"
+						update=":frmOpenRelac:pnlOpenRelac">
+						<f:setPropertyActionListener target="#{MBFisica.fisica}"
+							value="#{item}" />
+					</p:commandButton>
+					<p:commandButton icon="ui-icon-note" title="Listar Carteirinhas"
+						action="#{MBFisica.prepararListarBen}"
+						oncomplete="PF('dlgListRelac').show();"
+						update=":frmListRelac:pnlBenefic">
+						<f:setPropertyActionListener target="#{MBFisica.fisica}"
+							value="#{item}" />
+					</p:commandButton>
+
+
+
+				</p:column>
+			</p:dataTable>
+		</h:form>
+
+		<p:dialog widgetVar="dlgUsuario" closable="false" draggable="false"
+			modal="true" appendTo="@(body)" resizable="false"
+			header="02 - Dados do Titular">
+			<h:form id="frmUsuNovo">
+				<h:panelGrid id="pnlUsuNovo">
+					<p:panelGrid columns="3" style="width: 100%">
+						<p:outputLabel value="#{MBFisica.fisica.idtb_pessoafisica}" />
+						<p:outputLabel value="Nome Segurado/Beneficiário" />
+						<p:inputText value="#{MBFisica.fisica.tb_pf_nome}" size="110"
+							maxlength="45" />
+					</p:panelGrid>
+					<p:panelGrid id="pnlCpf" columns="9" style="width: 100%">
+						<p:outputLabel value="Sexo" />
+						<p:selectOneMenu value="#{MBFisica.fisica.tb_pf_sexo}">
+							<f:selectItem itemValue="" itemLabel="Selecione um item" />
+							<f:selectItem itemValue="M" itemLabel="Masculino" />
+							<f:selectItem itemValue="F" itemLabel="Feminino" />
+						</p:selectOneMenu>
+						<p:outputLabel value="Estado Civil" />
+						<p:selectOneMenu
+							value="#{MBFisica.fisica.estadocivil_combo.tb_id_estado}"
+							filter="true">
+							<f:selectItem itemValue="0" itemLabel="Estado Civil" />
+							<f:selectItems value="#{MBFisica.comboEstadocivils}" var="item"
+								itemValue="#{item.tb_id_estado}" itemLabel="#{item.tb_estado}" />
+						</p:selectOneMenu>
+						<p:outputLabel for="effect" value="Data de Nascimento" />
+						<p:calendar id="effect" value="#{MBFisica.fisica.pf_datanasc}"
+							effect="fold" />
+						<p:outputLabel value="Numero CPF" />
+						<p:inputMask id="ncmae" value="#{MBFisica.fisica.tb_pf_cpf}"
+							mask="999.999.999-99" size="20" required="true"
+							requiredMessage="Campo CPF é obrigatório.">
+
+						</p:inputMask>
+
+						<p:commandButton icon="ui-icon-circle-zoomout"
+							title="Verifica CPF" actionListener="#{MBFisica.verifycpf}"
+							update=":frmUsuNovo:pnlGravar :msgGlobal">
+
+						</p:commandButton>
+					</p:panelGrid>
+					<p:panelGrid columns="6" style="width: 100%">
+						<p:outputLabel value="Número do Documento" />
+						<p:inputMask id="nrg" value="#{MBFisica.fisica.tb_pf_nro_docto}" />
+
+						<p:outputLabel value="Órgão Expedidor" />
+						<p:inputText value="#{MBFisica.fisica.tb_pf_orgao_exp}" size="10"
+							maxlength="5" />
+
+						<p:outputLabel for="effect3" value="Data da Expedição" />
+						<p:calendar id="effect3" value="#{MBFisica.fisica.pf_DataExped}"
+							effect="fold" />
+
+					</p:panelGrid>
+					<p:panelGrid columns="6" style="width: 100%">
+
+						<p:outputLabel value="Nome da Mãe" />
+						<p:inputMask id="ncmae1" value="#{MBFisica.fisica.tb_pf_nome_mae}"
+							size="45" maxlength="45">
+						</p:inputMask>
+						<p:outputLabel for="effect1" value="Data de Início de Vigência" />
+						<p:calendar id="effect1" value="#{MBFisica.fisica.pf_dt_ini_vig}"
+							effect="fold" />
+
+						<p:outputLabel value="Registro Identificação Civil" />
+						<p:inputText value="#{MBFisica.fisica.tb_pf_RIC}" size="50"
+							maxlength="14" />
+					</p:panelGrid>
+
+					<p:panelGrid columns="6" style="width: 100%">
+						<p:outputLabel value="Número do Cartão Nacional de Saúde" />
+						<p:inputText value="#{MBFisica.fisica.tb_pf_cartao_saude}"
+							size="30" maxlength="14" />
+
+						<p:outputLabel value="Declaração de Nascido Vivo" />
+						<p:inputText value="#{MBFisica.fisica.tb_pf_nascido_vivo}"
+							size="30" maxlength="14" />
+						<p:outputLabel value="Matrícula Funcional" />
+						<p:inputText value="#{MBFisica.fisica.tb_pf_matricula_func}"
+							size="40" maxlength="14" />
+
+					</p:panelGrid>
+					<p:panelGrid columns="8" style="width: 100%">
+
+						<p:selectOneMenu
+							value="#{MBFisica.fisica.profissao_combo.tb_id_prof}"
+							filter="true">
+							<f:selectItem itemValue="0" itemLabel="Profissão" />
+							<f:selectItems value="#{MBFisica.comboProfissao}" var="item"
+								itemValue="#{item.tb_id_prof}" itemLabel="#{item.tb_prof}" />
+						</p:selectOneMenu>
+						<p:outputLabel for="effect2" value="Data de Casamento" />
+						<p:calendar id="effect2" value="#{MBFisica.fisica.pf_data_adm}"
+							effect="fold" />
+						<p:outputLabel value="PIS/PASEP/NIT" />
+						<p:inputText value="#{MBFisica.fisica.tb_pf_PISPASEP}" size="50"
+							maxlength="14" />
+					</p:panelGrid>
+
+					<p:panelGrid columns="10" style="width: 100%">
+
+						<p:outputLabel value="Fixo - DDD(000)" />
+						<p:inputText value="#{MBFisica.fisica.tb_pf_ddd01}" size="3"
+							maxlength="3" />
+						<p:inputMask value="#{MBFisica.fisica.tb_pf_fone01}" size="9"
+							mask="9999-9999" maxlength="9" />
+
+						<p:outputLabel value="Celular - DDD(000)" />
+						<p:inputText value="#{MBFisica.fisica.tb_pf_ddd02}" size="3"
+							maxlength="3" />
+
+						<p:inputMask value="#{MBFisica.fisica.tb_pf_fone02}" size="10"
+							mask="99999-9999" maxlength="10" />
+
+						<p:outputLabel value="CEP(99999999)" />
+						<p:inputMask id="cep1" value="#{MBFisica.fisica.STREET_ZIPCODE}"
+							mask="99999999" size="8">
+							<p:ajax event="blur" listener="#{MBFisica.localizar}"
+								update=":frmUsuNovo:pnlcep :msgGlobal" />
+						</p:inputMask>
+
+						<p:outputLabel value="E-Mail" />
+						<p:inputText value="#{MBFisica.fisica.tb_pf_email}" size="30"
+							maxlength="90" />
+
+					</p:panelGrid>
+
+					<p:panelGrid id="pnlcep" columns="4" style="width: 100%">
+
+						<p:outputLabel value="Tipo Logradouro" style="font-weight:bold" />
+						<p:outputLabel value="#{MBFisica.fisica.STREET_TYPE}" />
+
+						<p:outputLabel value="Logradouro" style="font-weight:bold" />
+						<p:outputLabel value="#{MBFisica.fisica.STREET_NAME}" />
+
+						<p:outputLabel value="Número" style="font-weight:bold" />
+						<p:inputText value="#{MBFisica.fisica.tb_cep_num}" maxlength="5" />
+
+						<p:outputLabel value="Complemento" style="font-weight:bold" />
+						<p:inputText value="#{MBFisica.fisica.STREET_COMP}" maxlength="50" />
+
+						<p:outputLabel value="Bairro" style="font-weight:bold" />
+						<p:outputLabel value="#{MBFisica.fisica.DISTRICT}" />
+
+						<p:outputLabel value="Cidade" style="font-weight:bold" />
+						<p:outputLabel value="#{MBFisica.fisica.CITY}" />
+
+						<p:outputLabel value="Estado" style="font-weight:bold" />
+						<p:outputLabel value="#{MBFisica.fisica.STATE}" />
+					</p:panelGrid>
+				</h:panelGrid>
+				<h:panelGrid columns="3">
+					<p:panelGrid id="pnlGravar" columns="3" style="width: 100%">
+
+						<p:commandButton id="rec" value="Gravar"
+							oncomplete="PF('dlgUsuario').hide(); widgetVar_001.clearfilters();"
+							update=":frmUsuListagem:tbl_001"
+							actionListener="#{MBFisica.novo}"
+							rendered="#{MBFisica.showNewButton}"
+							action="fisica.xhtml?faces-redirect=true" />
+
+						<p:commandButton value="Sair" onclick="PF('dlgUsuario').hide();"
+							actionListener="#{MBFisica.hidebutton}" />
+
+					</p:panelGrid>
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+		<p:dialog widgetVar="dlgExcluir" closable="false" draggable="false"
+			modal="true" appendTo="@(body)" resizable="false"
+			header="Excluir Titular">
+			<h:form id="frmExcluir">
+				<h:panelGrid id="pnlExcNovo" columns="2">
+					<p:outputLabel value="Numero CPF   " />
+					<h:outputText value="#{MBFisica.fisica.tb_pf_cpf}" />
+					<p:outputLabel value="Nome Segurado/Beneficiário   " />
+					<h:outputText value="#{MBFisica.fisica.tb_pf_nome}" />
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton value="Excluir"
+						actionListener="#{MBFisica.excluir}"
+						oncomplete="PF('dlgExcluir').hide(); widgetVar_001.clearfilters();"
+						update=":frmUsuListagem:tbl_001 :msgGlobal"
+						action="fisica.xhtml?faces-redirect=true" />
+
+					<p:commandButton value="Sair" onclick="PF('dlgExcluir').hide();" />
+				</h:panelGrid>
+
+			</h:form>
+
+		</p:dialog>
+		<p:dialog widgetVar="dlgListar" closable="false" draggable="false"
+			modal="true" appendTo="@(body)" resizable="false"
+			header="Lista de Dependentes">
+			<h:form id="frmListar">
+				<h:panelGrid id="pnlListar">
+					<p:panelGrid columns="2" style="width: 100%">
+						<p:outputLabel value="Nome do Titular" />
+						<p:outputLabel value="#{MBFisica.fisica.tb_pf_nome}" />
+					</p:panelGrid>
+					<p:panelGrid columns="6" style="width: 100%">
+						<p:dataTable id="tbl_0001"
+							emptyMessage="Nenhum Registro Encontrado."
+							value="#{MBFisica.itensdepend}" var="item" paginator="true"
+							rows="5">
+
+							<p:column headerText="ID">
+								<h:outputText value="#{item.idtb_dependente}" />
+							</p:column>
+
+							<p:column headerText="Nome do Dependente" id="nomeseg"
+								sortBy="#{item.tb_pf_nome}" filterBy="#{item.tb_pf_nome}">
+
+								<p:commandLink oncomplete="PF('dlgEditarD').show();"
+									update=":frmAlterarD:pnlEditarD">
+									<f:setPropertyActionListener target="#{MBDepend.depend}"
+										value="#{item}" />
+									<h:outputText value="#{item.tb_pf_nome}" />
+								</p:commandLink>
+
+							</p:column>
+
+							<p:column headerText="CPF ">
+								<h:outputText value="#{item.tb_pf_cpf}" />
+							</p:column>
+
+						</p:dataTable>
+
+					</p:panelGrid>
+
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+
+					<p:commandButton value="Sair" oncomplete="PF('dlgListar').hide();"
+						update=":frmUsuListagem:tbl_001 :msgGlobal" />
+
+				</h:panelGrid>
+
+			</h:form>
+
+		</p:dialog>
+		<p:dialog widgetVar="dlgEditarD" closable="false" draggable="false"
+			modal="true" appendTo="@(body)" resizable="false"
+			header="Editar Dependente">
+			<h:form id="frmAlterarD">
+				<h:panelGrid id="pnlEditarD" columns="2">
+					<p:outputLabel value="ID Interno - Titular" />
+					<p:outputLabel id="id" value="#{MBDepend.depend.idtb_pessoafisica}" />
+					<p:outputLabel value="Nome do Titular" />
+					<p:outputLabel value="#{MBDepend.depend.tb_pf_nome_t}" />
+					<p:outputLabel value="ID Interno - Dependente" />
+					<p:outputLabel id="id2" value="#{MBDepend.depend.idtb_dependente}" />
+
+					<p:outputLabel value="NÚmero CPF" />
+					<p:inputMask id="ncpf" value="#{MBDepend.depend.tb_pf_cpf}"
+						mask="999.999.999-99" />
+
+					<p:outputLabel value="Nome do Dependente" />
+					<p:inputText value="#{MBDepend.depend.tb_pf_nome}" size="50"
+						maxlength="100" />
+
+					<p:outputLabel value="Número do Documento" />
+					<p:inputMask id="nrg" value="#{MBDepend.depend.tb_pf_nro_docto}"
+						mask="99.999.999-9" />
+
+					<p:outputLabel for="effect" value="Data de Nascimento" />
+					<p:calendar id="effect" value="#{MBDepend.depend.pf_datanasc}"
+						effect="fold" locale="pt_BR" pattern="dd/MM/yyyy" />
+
+					<p:outputLabel value="E-Mail" />
+					<p:inputText value="#{MBDepend.depend.tb_pf_email}" size="30"
+						maxlength="90" />
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton value="Alterar"
+						actionListener="#{MBDepend.editar}"
+						oncomplete="PF('dlgEditarD').hide(); widgetVar_001.clearfilters();"
+						update=":frmUsuListagem:tbl_001 :msgGlobal "
+						action="fisica.xhtml?faces-redirect=true" />
+
+					<p:commandButton value="Sair" onclick="PF('dlgEditarD').hide();" />
+				</h:panelGrid>
+
+			</h:form>
+
+		</p:dialog>
+		<p:dialog widgetVar="dlgEditar" closable="false" draggable="false"
+			modal="true" appendTo="@(body)" resizable="false"
+			header="Editar Titular">
+			<h:form id="frmAlterar">
+				<h:panelGrid id="pnlEditar">
+					<p:panelGrid columns="2" style="width: 100%">
+						<p:outputLabel value="Nome Segurado/Beneficiário" />
+						<p:inputText value="#{MBFisica.fisica.tb_pf_nome}" size="110"
+							maxlength="45" />
+					</p:panelGrid>
+					<p:panelGrid columns="8" style="width: 100%">
+						<p:outputLabel value="Sexo" />
+						<p:selectOneMenu value="#{MBFisica.fisica.tb_pf_sexo}">
+							<f:selectItem itemValue="" itemLabel="Selecione um item" />
+							<f:selectItem itemValue="M" itemLabel="Masculino" />
+							<f:selectItem itemValue="F" itemLabel="Feminino" />
+						</p:selectOneMenu>
+						<p:outputLabel value="Estado Civil" />
+						<p:selectOneMenu
+							value="#{MBFisica.fisica.estadocivil_combo.tb_id_estado}"
+							filter="true">
+							<f:selectItem itemValue="0" itemLabel="Estado Civil" />
+							<f:selectItems value="#{MBFisica.comboEstadocivils}" var="item"
+								itemValue="#{item.tb_id_estado}" itemLabel="#{item.tb_estado}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel for="effect" value="Data de Nascimento" />
+						<p:calendar id="effect" value="#{MBFisica.fisica.pf_datanasc}"
+							effect="fold" locale="pt_BR" pattern="dd-MM-yyyy" />
+						<p:outputLabel value="Numero CPF" />
+						<p:inputMask id="ncpf1" value="#{MBFisica.fisica.tb_pf_cpf}"
+							mask="999.999.999-99" size="50" />
+
+					</p:panelGrid>
+					<p:panelGrid columns="6" style="width: 100%">
+						<p:outputLabel value="Número do Documento" />
+						<p:inputMask id="nrg" value="#{MBFisica.fisica.tb_pf_nro_docto}"
+							mask="99.999.999-9" />
+
+						<p:outputLabel value="Órgão Expedidor" />
+						<p:inputText value="#{MBFisica.fisica.tb_pf_orgao_exp}" size="10"
+							maxlength="5" />
+
+						<p:outputLabel for="effect3" value="Data da Expedição" />
+						<p:calendar id="effect3" value="#{MBFisica.fisica.pf_DataExped}"
+							locale="pt_BR" pattern="dd-MM-yyyy" />
+
+					</p:panelGrid>
+
+					<p:panelGrid columns="6" style="width:100%">
+						<p:outputLabel value="Nome da Mãe" />
+						<p:inputText value="#{MBFisica.fisica.tb_pf_nome_mae}" size="45"
+							maxlength="45" />
+						<p:outputLabel for="effect1" value="Data de Início de Vigência" />
+						<p:calendar id="effect1" value="#{MBFisica.fisica.pf_dt_ini_vig}"
+							locale="pt_BR" pattern="dd-MM-yyyy" />
+
+						<p:outputLabel value="Registro Identificação Civil" />
+						<p:inputText value="#{MBFisica.fisica.tb_pf_RIC}" size="50"
+							maxlength="14" />
+
+					</p:panelGrid>
+					<p:panelGrid columns="8" style="width: 100%">
+						<p:outputLabel value="Número do Cartão Nacional de Saúde" />
+						<p:inputText value="#{MBFisica.fisica.tb_pf_cartao_saude}"
+							size="30" maxlength="14" />
+
+						<p:outputLabel value="Declaração de Nascido Vivo" />
+						<p:inputText value="#{MBFisica.fisica.tb_pf_nascido_vivo}"
+							size="30" maxlength="14" />
+					</p:panelGrid>
+
+					<p:panelGrid columns="8" style="width: 100%">
+						<p:outputLabel value="Matrícula Funcional" />
+						<p:inputText value="#{MBFisica.fisica.tb_pf_matricula_func}"
+							size="40" maxlength="14" />
+						<p:selectOneMenu
+							value="#{MBFisica.fisica.profissao_combo.tb_id_prof}"
+							filter="true">
+							<f:selectItem itemValue="0" itemLabel="Profissão" />
+							<f:selectItems value="#{MBFisica.comboProfissao}" var="item"
+								itemValue="#{item.tb_id_prof}" itemLabel="#{item.tb_prof}" />
+						</p:selectOneMenu>
+						<p:outputLabel for="effect2" value="Data de Casamento" />
+						<p:calendar id="effect2" value="#{MBFisica.fisica.pf_data_adm}"
+							effect="fold" />
+						<p:outputLabel value="PIS/PASEP/NIT" />
+						<p:inputText value="#{MBFisica.fisica.tb_pf_PISPASEP}" size="50"
+							maxlength="14" />
+					</p:panelGrid>
+
+
+
+					<p:panelGrid columns="10" style="width: 100%">
+
+						<p:outputLabel value="Fixo - DDD(000)" />
+						<p:inputText value="#{MBFisica.fisica.tb_pf_ddd01}" size="3"
+							maxlength="3" />
+						<p:inputMask value="#{MBFisica.fisica.tb_pf_fone01}" size="9"
+							mask="9999-9999" maxlength="9" />
+
+						<p:outputLabel value="Celular - DDD(000)" />
+						<p:inputText value="#{MBFisica.fisica.tb_pf_ddd02}" size="3"
+							maxlength="3" />
+
+						<p:inputMask value="#{MBFisica.fisica.tb_pf_fone02}" size="10"
+							mask="99999-9999" maxlength="10" />
+
+						<p:outputLabel value="CEP(99999999)" />
+						<p:inputMask id="cep2" value="#{MBFisica.fisica.STREET_ZIPCODE}"
+							mask="99999999" size="8">
+
+							<p:ajax event="blur" listener="#{MBFisica.localizar}"
+								update=":frmAlterar:pnlEditar :msgGlobal"
+								oncomplete="PF('dlgEditar').show();" />
+
+						</p:inputMask>
+
+						<p:outputLabel value="E-Mail" />
+						<p:inputText value="#{MBFisica.fisica.tb_pf_email}" size="30"
+							maxlength="90" />
+
+					</p:panelGrid>
+
+					<p:panelGrid columns="4" style="width: 100%">
+
+						<p:outputLabel value="Tipo Logradouro" style="font-weight:bold" />
+						<p:outputLabel value="#{MBFisica.fisica.STREET_TYPE}" />
+
+						<p:outputLabel value="Logradouro" style="font-weight:bold" />
+						<p:outputLabel value="#{MBFisica.fisica.STREET_NAME}" />
+
+						<p:outputLabel value="Número" style="font-weight:bold" />
+						<p:inputText value="#{MBFisica.fisica.tb_cep_num}" maxlength="5" />
+
+						<p:outputLabel value="Complemento" style="font-weight:bold" />
+						<p:inputText value="#{MBFisica.fisica.STREET_COMP}" maxlength="50" />
+
+						<p:outputLabel value="Bairro" style="font-weight:bold" />
+						<p:outputLabel value="#{MBFisica.fisica.DISTRICT}" />
+
+						<p:outputLabel value="Cidade" style="font-weight:bold" />
+						<p:outputLabel value="#{MBFisica.fisica.CITY}" />
+
+						<p:outputLabel value="Estado" style="font-weight:bold" />
+						<p:outputLabel value="#{MBFisica.fisica.STATE}" />
+					</p:panelGrid>
+
+
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton value="Alterar"
+						actionListener="#{MBFisica.editar}"
+						oncomplete="PF('dlgEditar').hide(); widgetVar_001.clearfilters();"
+						update=":frmUsuListagem:tbl_001 :msgGlobal"
+						action="fisica.xhtml?faces-redirect=true" />
+
+					<p:commandButton value="Sair" onclick="PF('dlgEditar').hide();" />
+				</h:panelGrid>
+
+			</h:form>
+
+		</p:dialog>
+		<p:dialog widgetVar="dlgDepend" closable="false" draggable="false"
+			modal="true" appendTo="@(body)" resizable="false"
+			header="03 - Dados do Dependente">
+			<h:form id="frmDepend" widgetVar="widgetVar_099" method="post"
+				name="frmEnviaDados">
+
+				<h:panelGrid id="pnlDepend">
+					<p:panelGrid columns="2" style="width: 50%">
+						<p:outputLabel
+							value="Nunca alterar este codigo #{MBFisica.fisica.idtb_pessoafisica}" />
+						<p:inputText size="0" id="idtb_pessoafisica"
+							value="#{MBDepend.depend.idtb_pessoafisica}"
+							onfocus="if(this.value == '') {this.value = #{MBFisica.fisica.idtb_pessoafisica};} "
+							onblur="idtb_pessoafisica.disabled='true'" maxlength="0">
+						</p:inputText>
+					</p:panelGrid>
+
+					<p:panelGrid columns="3" style="width: 100%">
+						<p:outputLabel value="Titular" />
+						<p:outputLabel id="idname" value="#{MBFisica.fisica.tb_pf_nome}" />
+					</p:panelGrid>
+					<p:panelGrid columns="2" style="width: 100%">
+						<p:outputLabel value="Nome Dependente" />
+						<p:inputText name="txtnome" id="nomedepe"
+							value="#{MBDepend.depend.tb_pf_nome}" size="110" maxlength="45"
+							tabindex="1" required="true">
+							<p:ajax event="blur" listener="#{MBFisica.verifypf}"
+								update="idtb_pessoafisica" />
+						</p:inputText>
+					</p:panelGrid>
+					<p:panelGrid columns="4" style="width: 100%">
+						<p:outputLabel value="Sexo" />
+						<p:selectOneMenu value="#{MBDepend.depend.tb_pf_sexo}">
+							<f:selectItem itemValue="" itemLabel="Selecione um item" />
+							<f:selectItem itemValue="M" itemLabel="Masculino" />
+							<f:selectItem itemValue="F" itemLabel="Feminino" />
+						</p:selectOneMenu>
+						<p:outputLabel for="effect" value="Data de Nascimento" />
+						<p:calendar id="effect" value="#{MBDepend.depend.pf_datanasc}"
+							effect="fold" locale="pt_BR" pattern="dd/MM/yyyy" />
+					</p:panelGrid>
+					<p:panelGrid columns="2" style="width: 50%">
+						<p:outputLabel value="Numero CPF" />
+						<p:inputMask id="ncpf2" value="#{MBDepend.depend.tb_pf_cpf}"
+							mask="999.999.999-99" size="50" />
+					</p:panelGrid>
+					<p:panelGrid columns="4" style="width: 100%">
+						<p:outputLabel for="effect1" value="Data de Início de Vigência" />
+						<p:calendar id="effect1" value="#{MBDepend.depend.pf_dt_ini_vig}"
+							effect="fold" locale="pt_BR" pattern="dd/MM/yyyy" />
+						<p:outputLabel value="Registro Identificação Civil" />
+						<p:inputText value="#{MBDepend.depend.tb_pf_RIC}" size="50"
+							maxlength="14" />
+					</p:panelGrid>
+					<p:panelGrid columns="4" style="width: 100%">
+						<p:outputLabel value="Número do Cartão Nacional de Saúde" />
+						<p:inputText value="#{MBDepend.depend.tb_pf_cartao_saude}"
+							size="30" maxlength="14" />
+						<p:outputLabel value="Declaração de Nascido Vivo" />
+						<p:inputText value="#{MBDepend.depend.tb_pf_nascido_vivo}"
+							size="30" maxlength="14" />
+					</p:panelGrid>
+					<p:panelGrid columns="4" style="width: 100%">
+						<p:outputLabel value="Matrícula Funcional" />
+						<p:inputText value="#{MBDepend.depend.tb_pf_matricula_func}"
+							size="40" maxlength="14" />
+						<p:outputLabel for="effect2" value="Data de Casamento" />
+						<p:calendar id="effect2" value="#{MBDepend.depend.pf_data_adm}"
+							effect="fold" locale="pt_BR" pattern="dd/MM/yyyy" />
+					</p:panelGrid>
+					<p:panelGrid columns="6" style="width: 100%">
+						<p:outputLabel value="Número do Documento" />
+						<p:inputMask id="nrg" value="#{MBDepend.depend.tb_pf_nro_docto}"
+							mask="99.999.999-9" />
+						<p:outputLabel value="Órgão Expedidor" />
+						<p:inputText value="#{MBDepend.depend.tb_pf_orgao_exp}" size="10"
+							maxlength="5" />
+
+						<p:outputLabel for="effect3" value="Data da Expedição" />
+						<p:calendar id="effect3"
+							value="#{MBDepend.depend.tb_pf_DataExped}" effect="fold"
+							locale="pt_BR" pattern="dd/MM/yyyy" />
+					</p:panelGrid>
+					<p:panelGrid columns="2" style="width: 100%">
+						<p:outputLabel value="PIS/PASEP/NIT" />
+						<p:inputText value="#{MBDepend.depend.tb_pf_PISPASEP}" size="50"
+							maxlength="14" />
+					</p:panelGrid>
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton value="Gravar" actionListener="#{MBDepend.novo_d}"
+						oncomplete="PF('dlgDepend').hide(); widgetVar_001.clearfilters();"
+						update=":frmUsuListagem:tbl_001 :msgGlobal"
+						action="fisica.xhtml?faces-redirect=true">
+					</p:commandButton>
+					<p:commandButton value="Sair" oncomplete="PF('dlgDepend').hide();" />
+				</h:panelGrid>
+			</h:form>
+
+		</p:dialog>
+		<p:dialog widgetVar="dlgOpenRelac" closable="false" draggable="false"
+			modal="true" appendTo="@(body)" resizable="false"
+			header="Inclusão de Benefícios">
+			<h:form id="frmOpenRelac" method="post" name="frmDados">
+				<h:panelGrid id="pnlBenefic" columns="5">
+					<p:commandButton value="Salvar" icon="ui-icon-video"
+						disabled="false" actionListener="#{MBFisica.salvarRelac}"
+						oncomplete="PF('dlgOpenRelac').hide(); widgetVar_099.clearfilters();"
+						update=":frmUsuListagem:tbl_001"
+						action="fisica.xhtml?faces-redirect=true">
+						<f:setPropertyActionListener target="#{MBFisica.fisica}"
+							value="#{item}" />
+					</p:commandButton>
+					<p:commandButton value="Sair"
+						oncomplete="PF('dlgOpenRelac').hide()" />
+				</h:panelGrid>
+				<h:panelGrid id="pnlOpenRelac">
+					<p:panel
+						header="#{MBFisica.fisica.idtb_pessoafisica} - #{MBFisica.fisica.tb_pf_nome}">
+
+						<p:panelGrid id="id903" columns="2">
+							<p:selectOneMenu style="width:400px;"
+								value="#{MBFisica.fisica.apolices_combo.id_apolice}"
+								required="true" requiredMessage="Campo Apolice é obrigatório."
+								immediate="false" filter="true">
+								<f:selectItem itemValue="" itemLabel="Selecione Apólice" />
+								<f:selectItems filter="true" value="#{MBFisica.comboApolices}"
+									var="item" itemValue="#{item.id_apolice}"
+									itemLabel="#{item.id_apolice} - #{item.segmento}" />
+								<p:ajax event="change" listener="#{MBFisica.getcongeneres}"
+									update=":frmOpenRelac:id900 " />
+							</p:selectOneMenu>
+						</p:panelGrid>
+
+						<p:panelGrid id="id900" columns="2">
+							<p:selectOneMenu style="width:400px;"
+								value="#{MBFisica.fisica.congenere_combo.tb_idpj}" filter="true"
+								required="true" requiredMessage="Campo Congênere é obrigatório."
+								immediate="false">
+								<f:selectItem itemValue="" itemLabel="Selecione Congênere" />
+								<f:selectItems value="#{MBFisica.comboCongenere}" var="item"
+									itemValue="#{item.tb_idpj}" itemLabel="#{item.tb_razao}" />
+	
+							</p:selectOneMenu>
+						</p:panelGrid>
+
+						<p:panelGrid id="id904" columns="2">
+							<p:outputLabel value="Número da Carteirinha" />
+							<p:inputText id="ncmae"
+								value="#{MBFisica.fisica.tb_num_carteira}" size="39"
+								required="true" maxlength="100"
+								requiredMessage="Número da Carteirinha" immediate="false" />
+						</p:panelGrid>
+					</p:panel>
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog widgetVar="dlgListRelac" closable="false" draggable="false"
+			modal="true" appendTo="@(body)" resizable="false"
+			header="Lista de Carteirinhas">
+			<h:form id="frmListRelac" method="post" name="frmDados">
+
+				<h:panelGrid id="pnlBotoes" columns="5">
+					<p:commandButton value="Sair"
+						oncomplete="PF('dlgListRelac').hide()" />
+				</h:panelGrid>
+
+				<h:panelGrid id="pnlBenefic" columns="5">
+
+					<p:panel header="Benefícios de #{MBFisica.fisica.idtb_pessoafisica} - #{MBFisica.fisica.tb_pf_nome}"
+						style="width: 100%">
+						<p:dataTable id="tbl_0001"
+							emptyMessage="Nenhum Registro Encontrado."
+							value="#{MBFisica.itensbeneficios}" var="item" paginator="true"
+							rows="5">
+							<p:column headerText="Estipulante">
+								<h:outputText value="#{item.tb_razao}" />
+							</p:column>
+
+							<p:column headerText="Apólice">
+								<h:outputText value="#{item.s_apolice}" />
+							</p:column>
+							<p:column headerText="Segmento">
+								<h:outputText value="#{item.s_segmento}" />
+							</p:column>
+
+							<p:column headerText="Número da Carteirinha">
+								<h:outputText value="#{item.num_carteira}" />
+							</p:column>
+						</p:dataTable>
+					</p:panel>
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+
+</ui:composition>

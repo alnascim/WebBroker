@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/templates/modeloSistema.xhtml">
+
+	<ui:define name="menu">
+		<ui:include src="/includes/menuPrincipal.xhtml" />
+	</ui:define>
+
+	<ui:define name="conteudo">
+		<h:form id="frmUsuListagem" widgetVar="tabelaUsuario">
+			<p:dataTable id="tblUsuario"
+				emptyMessage="Nenhum Registro Encontrado"
+				value="#{MBReport004.itens}" var="item"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+				filteredValue="#{MBReport004.itensfiltrados}" paginator="true"
+				rows="8">
+
+				<f:facet name="header">
+					Relatório de Produção Por Agência
+				</f:facet>
+
+				<f:facet name="footer">
+					<p:commandButton action="principal.xhtml?faces-redirect=true"
+						value="Cancelar" />
+				</f:facet>
+
+				<p:column headerText="ANO" sortBy="#{item.field_01}"
+					filterBy="#{item.field_01}">
+					<h:outputText value="#{item.field_01}" />
+					<f:facet name="header">
+						<h:outputText value="ANO" />
+					</f:facet>
+				</p:column>
+
+				<p:column headerText="MÊS" sortBy="#{item.field_02}"
+					filterBy="#{item.field_02}">
+					<f:facet name="header">
+						<h:outputText value="MÊS" />
+					</f:facet>
+					<h:outputText value="#{item.field_02}" />
+				</p:column>
+				<p:column headerText="SEGMENTO" sortBy="#{item.field_03}"
+					filterBy="#{item.field_03}">
+					<f:facet name="header">
+						<h:outputText value="SEGMENTO" />
+					</f:facet>
+					<h:outputText value="#{item.field_03}" />
+				</p:column>
+				<p:column headerText="SUCURSAL" sortBy="#{item.field_04}"
+					filterBy="#{item.field_04}">
+					<f:facet name="header">
+						<h:outputText value="SUCURSAL" />
+					</f:facet>
+					<h:outputText value="#{item.field_04}" />
+				</p:column>
+				<p:column headerText="AGÊNCIA" sortBy="#{item.field_08}"
+					filterBy="#{item.field_08}">
+					<f:facet name="header">
+						<h:outputText value="AGÊNCIA" />
+					</f:facet>
+					<h:outputText value="#{item.field_08}" />
+				</p:column>
+
+				<p:column headerText="ANGARIADOR" sortBy="#{item.field_05}"
+					filterBy="#{item.field_05}">
+					<f:facet name="header">
+						<h:outputText value="ANGARIADOR" />
+					</f:facet>
+					<h:outputText value="#{item.field_05}" />
+				</p:column>
+				<p:column headerText="PRÊMIO" sortBy="#{item.field_06}"
+					filterBy="#{item.field_06}">
+					<f:facet name="header">
+						<h:outputText value="PRÊMIO" />
+					</f:facet>
+					<h:outputText value="#{item.field_06}">
+						<f:convertNumber pattern="####,##0.00" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="COMISSÃO" sortBy="#{item.field_07}"
+					filterBy="#{item.field_07}">
+					<f:facet name="header">
+						<h:outputText value="COMISSÃO" />
+					</f:facet>
+					<h:outputText value="#{item.field_07}">
+						<f:convertNumber pattern="####,##0.00" />
+					</h:outputText>
+				</p:column>
+
+
+
+			</p:dataTable>
+			<p:panel header="Exportar Relatório">
+				<h:commandLink>
+					<p:graphicImage value="/images/Excel.png" />
+					<p:dataExporter type="xls"
+						postProcessor="#{MBReport004.postProcessXLS}" target="tblUsuario"
+						fileName="RPT_Producao" />
+				</h:commandLink>
+
+			</p:panel>
+
+		</h:form>
+	</ui:define>
+
+</ui:composition>
+
+

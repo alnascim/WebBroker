@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report1" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="cff983f9-aa9d-40e7-82ab-6897bb7d12d8">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<field name="field_01" class="java.lang.String"/>
+	<field name="field_02" class="java.lang.String"/>
+	<field name="field_03" class="java.lang.String"/>
+	<field name="field_04" class="java.lang.String"/>
+	<field name="field_08" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="81" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="1" width="802" height="60" backcolor="#CCCCCC" uuid="fb2cfc68-f7fc-4a03-a654-7a0ce07888e0"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="36" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+				</textElement>
+				<text><![CDATA[FECHAMENTO MENSAL ]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="52" splitType="Stretch">
+			<rectangle>
+				<reportElement x="1" y="2" width="231" height="49" uuid="21164780-ef50-4025-8f1f-c819ed59d06f"/>
+				<graphicElement>
+					<pen lineWidth="2.75"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="525" y="2" width="118" height="49" uuid="f92025de-6870-48ad-a7f4-5e6038d68977"/>
+				<graphicElement>
+					<pen lineWidth="2.75"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="644" y="2" width="155" height="49" uuid="4f92854b-f867-4950-b51b-9d38667b1281"/>
+				<graphicElement>
+					<pen lineWidth="2.75"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="53" y="10" width="116" height="34" uuid="b78acc9b-fab5-4636-af02-e92499772b9b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RAMO - CIA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="533" y="10" width="103" height="34" uuid="155b140f-cf3c-4799-839c-eccb64e05bba"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[COMISSÃO LÍQUIDA]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="232" y="2" width="138" height="49" uuid="0b816084-f276-4a5f-8740-3665c5d45f4f"/>
+				<graphicElement>
+					<pen lineWidth="2.75"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="238" y="5" width="126" height="43" uuid="550e7a57-a2eb-489d-8c8f-273a01ba7b24"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[COMISSÃO BRUTA]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="370" y="2" width="154" height="49" uuid="0ab128d3-aad2-4fbb-af41-37f3ee0319eb"/>
+				<graphicElement>
+					<pen lineWidth="2.75"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="647" y="5" width="129" height="43" uuid="99838bd3-7064-4f88-88ae-0c1f47370a8a"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[COMISSÃO EM CONTA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="375" y="7" width="144" height="39" uuid="0d1a2406-5dae-49ae-ae74-3d1006e797bf"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DESPESAS ESTORNOS]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="23" splitType="Stretch">
+			<rectangle>
+				<reportElement x="1" y="0" width="231" height="22" uuid="9822b2fd-a2a6-4631-af96-2a21edb17fa1"/>
+				<graphicElement>
+					<pen lineWidth="1.25"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="232" y="0" width="138" height="22" uuid="971e9bc9-6c11-49a7-a3c8-05d03e2b8b51"/>
+				<graphicElement>
+					<pen lineWidth="1.25"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="370" y="0" width="154" height="22" uuid="ed743453-09f3-4986-94e1-7d0ce2112e70"/>
+				<graphicElement>
+					<pen lineWidth="1.25"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="525" y="0" width="118" height="22" uuid="ac7a6453-8f94-4ab6-8e98-5ade817dd332"/>
+				<graphicElement>
+					<pen lineWidth="1.25"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="643" y="0" width="157" height="22" uuid="ccad6516-b7bd-412b-bc08-6f4f7b9066e7"/>
+				<graphicElement>
+					<pen lineWidth="1.25"/>
+				</graphicElement>
+			</rectangle>
+			<textField>
+				<reportElement x="12" y="0" width="208" height="20" uuid="efab0da3-da9f-458c-afe0-1285a0f75b96"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="12" isUnderline="false" isStrikeThrough="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{field_01}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="238" y="0" width="121" height="20" uuid="cb182b61-ffd3-4e47-83cc-c7260646ec54"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{field_02}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="393" y="0" width="99" height="20" uuid="ed0ae94e-e504-4347-afc4-b02f98bbb5dd"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{field_03}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="547" y="0" width="89" height="20" uuid="d4150bc3-7152-4c14-beb8-1531b5176eef"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{field_04}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="657" y="0" width="119" height="20" uuid="24a2aac3-fb08-48cb-a142-e6f982d65b22"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{field_08}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="28" splitType="Stretch">
+			<rectangle>
+				<reportElement x="644" y="2" width="155" height="25" uuid="39ae2aa1-c84d-4a8e-87e8-60b41eda3b01"/>
+				<graphicElement>
+					<pen lineWidth="2.75"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="370" y="2" width="154" height="25" uuid="5ba4d682-7330-4e7c-8592-04f4e9eddcef"/>
+				<graphicElement>
+					<pen lineWidth="2.75"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="1" y="2" width="231" height="25" uuid="6c6f39e7-6e5e-4739-ab64-eb69f0972534"/>
+				<graphicElement>
+					<pen lineWidth="2.75"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="525" y="2" width="118" height="25" uuid="4b803df7-bc89-41db-bab9-52e3f1389f77"/>
+				<graphicElement>
+					<pen lineWidth="2.75"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="232" y="2" width="138" height="25" uuid="6472d0ca-f2ef-49ba-bf76-0ed4d65a4703"/>
+				<graphicElement>
+					<pen lineWidth="2.75"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="7" y="3" width="116" height="23" uuid="a2b5dccc-5230-4525-ba3f-b12c7abe4d68"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL]]></text>
+			</staticText>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="28" splitType="Stretch">
+			<textField>
+				<reportElement x="676" y="6" width="100" height="20" uuid="996edad5-471e-4d18-bb42-4cba652c5e5f"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="640" y="5" width="36" height="20" uuid="a568153b-afb2-47f2-aa8f-24c1be68b19d"/>
+				<textElement>
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Página]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="5" splitType="Stretch"/>
+	</summary>
+</jasperReport>
